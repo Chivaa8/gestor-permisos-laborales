@@ -37,12 +37,10 @@ const permisoSchema = new mongoose.Schema({
   },
   empTramitador: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Empleado",
-    required: false,
+    ref: "Empleado"
   },
   fechaTramitacion: {
-    type: Date,
-    required: false,
+    type: Date
   },
 });
 
