@@ -1,4 +1,4 @@
-import Permiso from "../models/tipoPermiso.model";
+import Permiso from "../models/tipoPermiso.model.js";
 
 class permisoController {
   //constructor() {}

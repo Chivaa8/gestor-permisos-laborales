@@ -1,15 +1,16 @@
 import express from "express";
 const route = express.Router(); // debemos gestionar las rutas
-import permisoController from "../controllers/permiso.controller";
+
+import permisoController from "../controllers/permiso.controller.js";
 
 // creamos permiso
 route.post("/crear", permisoController.crearPermiso);
 
 // damos todos los permisos
-route.post("/", permisoController.obtenerPermisos);
+route.get("/", permisoController.obtenerPermisos);
 
 // damos un permiso
-route.post("/:id", permisoController.obtenerPermisoPorId);
+route.get("/:id", permisoController.obtenerPermisoPorId);
 
 // eliminamos un permiso
 route.delete("/:id", permisoController.retirarPermisos);
