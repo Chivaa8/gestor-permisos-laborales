@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import Empleado from "../models/employee.model.js"
+import Admin from "../models/tipoPermiso.model.js"
 
 class adminModel {
   async create(admin) {
