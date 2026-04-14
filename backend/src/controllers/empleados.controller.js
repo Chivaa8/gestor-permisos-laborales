@@ -1,10 +1,19 @@
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 import Empleado from "../models/employee.model.js";
 
 class empleadosController {
   async create(req, res) {
     try {
-      const data = await Empleado.create(req.body);
+      const { password, ...resto } = req.body;
+
+      const passwordHasheada = await bcrypt.hash(password, 10);
+
+      const data = await Empleado.create({
+        ...resto,
+        password: passwordHasheada
+      });
+
       res.status(201).json(data);
     } catch (e) {
       res.status(500).send(e);
@@ -48,11 +57,7 @@ class empleadosController {
         return res.status(400).json({ error: "ID no válido" });
       }
 
-      const data = await Empleado.findByIdAndUpdate(
-        id,
-        req.body,
-        { new: true }
-      );
+      const data = await Empleado.findByIdAndUpdate(id, req.body, { new: true });
 
       if (!data) {
         return res.status(404).json({ error: "Empleado no encontrado" });

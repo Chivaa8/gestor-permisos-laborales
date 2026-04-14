@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import permisosRoutes from "./routes/permisos.routes.js"
 import empleadosRoutes from "./routes/empleados.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 import dotenv from 'dotenv';
 
 
@@ -16,6 +17,7 @@ app.use(express.json());
 // rutas
 app.use("/api/permisos", permisosRoutes);
 app.use("/api/empleados", empleadosRoutes);
+app.use("/api/auth", authRoutes);
 
 
 // conexión a MongoDB
