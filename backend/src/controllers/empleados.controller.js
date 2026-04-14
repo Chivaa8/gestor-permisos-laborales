@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Empleado from "../models/employee.model.js";
 
 class empleadosController {
@@ -22,6 +23,11 @@ class empleadosController {
   async getOne(req, res) {
     try {
       const { id } = req.params;
+
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: "ID no válido" });
+      }
+
       const data = await Empleado.findById(id);
 
       if (!data) {
@@ -37,6 +43,10 @@ class empleadosController {
   async update(req, res) {
     try {
       const { id } = req.params;
+
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: "ID no válido" });
+      }
 
       const data = await Empleado.findByIdAndUpdate(
         id,
@@ -57,6 +67,10 @@ class empleadosController {
   async delete(req, res) {
     try {
       const { id } = req.params;
+
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: "ID no válido" });
+      }
 
       const data = await Empleado.findByIdAndDelete(id);
 
