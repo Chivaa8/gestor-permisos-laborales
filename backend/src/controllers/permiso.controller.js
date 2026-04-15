@@ -8,6 +8,7 @@ class permisoController {
       const nuevoPermiso = {
         // para que mande esto especificamente sino mandaría cualquier cosa
         ...req.body,
+        empId: req.user.id,
         estado: "pendiente",
         fechaCreacion: new Date(),
       };
@@ -87,7 +88,6 @@ class permisoController {
   aprobarPermiso = async (req, res) => {
     try {
       const { id } = req.params;
-      const { adminId } = req.body;
 
       const permiso = await Permiso.findById(id);
 
@@ -96,7 +96,7 @@ class permisoController {
       }
 
       permiso.estado = "aprobado";
-      permiso.empTramitador = adminId;
+      permiso.empTramitador = req.user.id
       permiso.fechaTramintacion = new Date();
 
       await permiso.save();
@@ -110,7 +110,6 @@ class permisoController {
   rechazarPermiso = async (req, res) => {
     try {
       const { id } = req.params;
-      const { adminId } = req.body;
 
       const permiso = await Permiso.findById(id);
 
@@ -119,7 +118,7 @@ class permisoController {
       }
 
       permiso.estado = "rechazado";
-      permiso.empTramitador = adminId;
+      permiso.empTramitador = req.user.id
       permiso.fechaTramintacion = new Date();
 
       await permiso.save();

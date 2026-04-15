@@ -1,21 +1,24 @@
 import express from "express";
-const route = express.Router();
-
+import authMiddleware from "../middlewares/auth.middleware.js";
+import adminMiddleware from "../middlewares/admin.middleware.js";
 import empleadosController from "../controllers/empleados.controller.js"
 
+const route = express.Router();
+
+
 // contratar empleado
-route.post("/", empleadosController.create);
+route.post("/", authMiddleware, adminMiddleware, empleadosController.create);
 
 // coger uno empleado
-route.get("/:id", empleadosController.getOne)
+route.get("/:id", authMiddleware, adminMiddleware, empleadosController.getOne)
 
 // coger todos los empleados
-route.get("/", empleadosController.getAll);
+route.get("/", authMiddleware, adminMiddleware, empleadosController.getAll);
 
 // actualizar
-route.put("/:id/", empleadosController.update);
+route.put("/:id/", authMiddleware, adminMiddleware, empleadosController.update);
 
 // despedir
-route.delete("/:id/", empleadosController.delete);
+route.delete("/:id/", authMiddleware, adminMiddleware, empleadosController.delete);
 
 export default route;

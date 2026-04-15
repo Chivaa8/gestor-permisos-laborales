@@ -14,7 +14,8 @@ class empleadosController {
         password: passwordHasheada
       });
 
-      res.status(201).json(data);
+      const empleado = await Empleado.findById(data._id).select("-password");
+      res.status(201).json(empleado);
     } catch (e) {
       res.status(500).send(e);
     }
@@ -22,7 +23,7 @@ class empleadosController {
 
   async getAll(req, res) {
     try {
-      const data = await Empleado.find();
+      const data = await Empleado.find().select("-password");
       res.status(200).json(data);
     } catch (e) {
       res.status(500).send(e);
@@ -37,7 +38,7 @@ class empleadosController {
         return res.status(400).json({ error: "ID no válido" });
       }
 
-      const data = await Empleado.findById(id);
+      const data = await Empleado.findById(id).select("-password");;
 
       if (!data) {
         return res.status(404).json({ error: "Empleado no encontrado" });
@@ -57,7 +58,7 @@ class empleadosController {
         return res.status(400).json({ error: "ID no válido" });
       }
 
-      const data = await Empleado.findByIdAndUpdate(id, req.body, { new: true });
+      const data = await Empleado.findByIdAndUpdate(id, req.body, { new: true }).select("-password");;
 
       if (!data) {
         return res.status(404).json({ error: "Empleado no encontrado" });
