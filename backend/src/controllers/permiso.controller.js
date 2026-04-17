@@ -1,4 +1,5 @@
-import Permiso from "../models/tipoPermiso.model.js";
+import Permiso from "../schemas/permiso.schema.js"
+import "../models/tipoPermiso.model.js"; // para que mongoDB funcione
 
 class permisoController {
   //constructor() {}
@@ -22,6 +23,22 @@ class permisoController {
 
   obtenerPermisos = async (req, res) => {
     try {
+      const { estado, empId, empTramitador} = req.query;
+
+      const filtros = {};
+
+      if (estado){
+        filtros.estado = estado;
+      }
+
+      if(empId){
+        filtros.empId = empId;
+      }
+
+      if(empTramitador){
+        filtros.empTramitador = empTramitador;
+      }
+      
       const permisos = await Permiso.find()
         .populate("empId") // populate reemplaza el id por el documento entero por eso antes usamos Permiso.find()
         .populate("tipo")

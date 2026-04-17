@@ -22,7 +22,7 @@ app.use("/api/auth", authRoutes);
 
 // conexión a MongoDB
 mongoose.connect(process.env.MONGO_DB_URI)
-    .then(() => console.log("Conectado"))
+    .then(() => console.log("Conectado correctamente a MongoDB"))
     .catch(err => console.log(err));
 
 // escuchar servidor

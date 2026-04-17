@@ -11,7 +11,7 @@ class empleadosController {
 
       const data = await Empleado.create({
         ...resto,
-        password: passwordHasheada
+        password: passwordHasheada,
       });
 
       const empleado = await Empleado.findById(data._id).select("-password");
@@ -38,7 +38,7 @@ class empleadosController {
         return res.status(400).json({ error: "ID no válido" });
       }
 
-      const data = await Empleado.findById(id).select("-password");;
+      const data = await Empleado.findById(id).select("-password");
 
       if (!data) {
         return res.status(404).json({ error: "Empleado no encontrado" });
@@ -58,7 +58,9 @@ class empleadosController {
         return res.status(400).json({ error: "ID no válido" });
       }
 
-      const data = await Empleado.findByIdAndUpdate(id, req.body, { new: true }).select("-password");;
+      const data = await Empleado.findByIdAndUpdate(id, req.body, {
+        new: true,
+      }).select("-password");
 
       if (!data) {
         return res.status(404).json({ error: "Empleado no encontrado" });
