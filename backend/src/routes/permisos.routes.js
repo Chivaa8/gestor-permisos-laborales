@@ -42,6 +42,20 @@ route.post("/crear", authMiddleware, permisoController.crearPermiso);
 
 /**
  * @swagger
+ * /api/permisos/dashboard/estados:
+ *   get:
+ *     summary: Obtener cantidad de permisos por estado
+ *     tags: [Permisos]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Resumen de permisos por estado
+ */
+route.get("/dashboard/estados", authMiddleware, adminMiddleware, permisoController.dashboardEstados);
+
+/**
+ * @swagger
  * /api/permisos:
  *   get:
  *     summary: Obtener permisos con filtros opcionales

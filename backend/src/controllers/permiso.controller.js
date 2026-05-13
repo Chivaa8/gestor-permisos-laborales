@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Permiso from "../schemas/permiso.schema.js"
 import "../models/tipoPermiso.model.js"; // para que mongoDB funcione
 
@@ -39,7 +40,7 @@ class permisoController {
         filtros.empTramitador = empTramitador;
       }
       
-      const permisos = await Permiso.find()
+      const permisos = await Permiso.find(filtros)
         .populate("empId") // populate reemplaza el id por el documento entero por eso antes usamos Permiso.find()
         .populate("tipo")
         .populate("empTramitador");
@@ -54,13 +55,23 @@ class permisoController {
     try {
       const { id } = req.params;
 
-      const permiso = await Permiso.findById(req.params.id)
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: "ID no valido" });
+      }
+
+      const permiso = await Permiso.findById(id)
         .populate("empId")
         .populate("tipo")
         .populate("empTramitador");
 
       if (!permiso) {
         return res.status(404).json({ error: "Permiso no encontrado" });
+      }
+
+      const empId = permiso.empId?._id?.toString() || permiso.empId?.toString();
+
+      if (req.user.rol !== "admin" && empId !== req.user.id) {
+        return res.status(403).json({ error: "No autorizado" });
       }
 
       res.json(permiso);
@@ -71,6 +82,10 @@ class permisoController {
 
   retirarPermisos = async (req, res) => {
     try {
+      if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({ error: "ID no valido" });
+      }
+
       await Permiso.findByIdAndDelete(req.params.id);
       res.json({ message: "Permiso eliminado" });
     } catch (error) {
@@ -92,6 +107,14 @@ class permisoController {
     try {
       const { id } = req.params;
 
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: "ID no valido" });
+      }
+
+      if (req.user.rol !== "admin" && req.user.id !== id) {
+        return res.status(403).json({ error: "No autorizado" });
+      }
+
       const permisos = await Permiso.find({ empId: id })
         .populate("tipo")
         .populate("empTramitador");
@@ -106,6 +129,10 @@ class permisoController {
     try {
       const { id } = req.params;
 
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: "ID no valido" });
+      }
+
       const permiso = await Permiso.findById(id);
 
       if (!permiso) {
@@ -114,7 +141,7 @@ class permisoController {
 
       permiso.estado = "aprobado";
       permiso.empTramitador = req.user.id
-      permiso.fechaTramintacion = new Date();
+      permiso.fechaTramitacion = new Date();
 
       await permiso.save();
 
@@ -128,6 +155,10 @@ class permisoController {
     try {
       const { id } = req.params;
 
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: "ID no valido" });
+      }
+
       const permiso = await Permiso.findById(id);
 
       if (!permiso) {
@@ -136,11 +167,38 @@ class permisoController {
 
       permiso.estado = "rechazado";
       permiso.empTramitador = req.user.id
-      permiso.fechaTramintacion = new Date();
+      permiso.fechaTramitacion = new Date();
 
       await permiso.save();
 
       res.json(permiso);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+  dashboardEstados = async (req, res) => {
+    try {
+      const estados = ["pendiente", "aprobado", "rechazado"];
+      const resultados = await Permiso.aggregate([
+        {
+          $group: {
+            _id: "$estado",
+            total: { $sum: 1 },
+          },
+        },
+      ]);
+
+      const resumen = estados.reduce((acc, estado) => {
+        acc[estado] = 0;
+        return acc;
+      }, {});
+
+      resultados.forEach((item) => {
+        resumen[item._id] = item.total;
+      });
+
+      res.status(200).json(resumen);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

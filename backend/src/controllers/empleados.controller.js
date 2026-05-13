@@ -63,7 +63,7 @@ class empleadosController {
       const { password, ...datosActualizables } = req.body;
 
       const data = await Empleado.findByIdAndUpdate(id, datosActualizables, {
-        new: true,
+        returnDocument: "after",
       }).select("-password");
 
       if (!data) {

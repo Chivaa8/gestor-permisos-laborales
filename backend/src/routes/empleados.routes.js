@@ -155,6 +155,50 @@ route.put("/:id/", authMiddleware, adminMiddleware, empleadosController.update);
  */
 route.delete("/:id/", authMiddleware, adminMiddleware, empleadosController.delete);
 
+/**
+ * @swagger
+ * /api/empleados/{id}/password:
+ *   put:
+ *     summary: Actualizar password de un empleado
+ *     tags: [Empleados]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - passwordActual
+ *               - passwordNueva
+ *               - confirmarPassword
+ *             properties:
+ *               passwordActual:
+ *                 type: string
+ *                 example: passwordActual123
+ *               passwordNueva:
+ *                 type: string
+ *                 example: passwordNova123
+ *               confirmarPassword:
+ *                 type: string
+ *                 example: passwordNova123
+ *     responses:
+ *       200:
+ *         description: Password actualizada correctamente
+ *       400:
+ *         description: Datos incorrectos
+ *       403:
+ *         description: No autorizado
+ *       404:
+ *         description: Empleado no encontrado
+ */
 route.put("/:id/password", authMiddleware, empleadosController.updatePassword);
 
 export default route;

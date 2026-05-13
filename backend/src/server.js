@@ -1,42 +1,52 @@
 import express from "express";
 import mongoose from "mongoose";
-import permisosRoutes from "./routes/permisos.routes.js"
+import cors from "cors";
+import { fileURLToPath } from "node:url";
+import permisosRoutes from "./routes/permisos.routes.js";
 import empleadosRoutes from "./routes/empleados.routes.js";
 import authRoutes from "./routes/auth.routes.js";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger.js";
-
-// cd backend
-// npm run dev 
-
-// http://localhost:3001/api-docs
-
 
 dotenv.config();
 
 const app = express();
 
-// middleware
+app.use(cors());
 app.use(express.json());
 
-// swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// rutas
 app.use("/api/permisos", permisosRoutes);
 app.use("/api/empleados", empleadosRoutes);
 app.use("/api/auth", authRoutes);
 
+async function connectDB() {
+  if (mongoose.connection.readyState === 1) {
+    return mongoose.connection;
+  }
 
-// conexión a MongoDB
-mongoose.connect(process.env.MONGO_DB_URI)
-    .then(() => console.log("Conectado correctamente a MongoDB"))
-    .catch(err => console.log(err));
+  return mongoose.connect(process.env.MONGO_DB_URI);
+}
 
-// escuchar servidor
-const PORT = process.env.PORT || 3000
-app.listen(PORT, () => {
-    console.log(`Servidor levantado en http://localhost:${PORT}`)
-});
+async function startServer() {
+  try {
+    await connectDB();
+    console.log("Conectado correctamente a MongoDB");
 
+    const PORT = process.env.PORT || 3000;
+    return app.listen(PORT, () => {
+      console.log(`Servidor levantado en http://localhost:${PORT}`);
+    });
+  } catch (err) {
+    console.log(err);
+    process.exit(1);
+  }
+}
+
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  startServer();
+}
+
+export { app, connectDB, startServer };
