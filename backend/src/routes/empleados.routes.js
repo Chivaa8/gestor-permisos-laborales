@@ -5,20 +5,154 @@ import empleadosController from "../controllers/empleados.controller.js"
 
 const route = express.Router();
 
-
-// contratar empleado
+// crear empleado
+/**
+ * @swagger
+ * /api/empleados:
+ *   post:
+ *     summary: Contratar empleado
+ *     tags: [Empleados]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *                 example: Juan
+ *               apellido:
+ *                 type: string
+ *                 example: Perez
+ *               email:
+ *                 type: string
+ *                 example: juan@test.com
+ *               username:
+ *                 type: string
+ *                 example: juan_login
+ *               password:
+ *                 type: string
+ *                 example: 1234
+ *               rol:
+ *                 type: string
+ *                 example: admin
+ *     responses:
+ *       201:
+ *         description: Empleado contratado
+ */
 route.post("/", authMiddleware, adminMiddleware, empleadosController.create);
 
-// coger uno empleado
-route.get("/:id", authMiddleware, adminMiddleware, empleadosController.getOne)
+// coger un empleado
+/**
+ * @swagger
+ * /api/empleados/{id}:
+ *   get:
+ *     summary: Obtener un empleado por ID
+ *     tags: [Empleados]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Empleado encontrado
+ *       404:
+ *         description: Empleado no encontrado
+ */
+route.get("/:id", authMiddleware, adminMiddleware, empleadosController.getOne);
 
-// coger todos los empleados
+//todos los empleados 
+/**
+ * @swagger
+ * /api/empleados:
+ *   get:
+ *     summary: Obtener todos los empleados
+ *     tags: [Empleados]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de empleados
+ *       401:
+ *         description: Token no proporcionado o inválido
+ *       403:
+ *         description: No autorizado
+ */
 route.get("/", authMiddleware, adminMiddleware, empleadosController.getAll);
 
 // actualizar
+/**
+ * @swagger
+ * /api/empleados/{id}:
+ *   put:
+ *     summary: Actualizar empleado
+ *     tags: [Empleados]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *                 example: Juan actualizado
+ *               apellido:
+ *                 type: string
+ *                 example: Perez
+ *               email:
+ *                 type: string
+ *                 example: juan@test.com
+ *               username:
+ *                 type: string
+ *                 example: juan123
+ *               rol:
+ *                 type: string
+ *                 example: basic
+ *     responses:
+ *       200:
+ *         description: Empleado actualizado
+ *       404:
+ *         description: Empleado no encontrado
+ */
 route.put("/:id/", authMiddleware, adminMiddleware, empleadosController.update);
 
 // despedir
+/**
+ * @swagger
+ * /api/empleados/{id}:
+ *   delete:
+ *     summary: Despedir empleado
+ *     tags: [Empleados]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Empleado despedido
+ *       404:
+ *         description: Empleado no encontrado
+ */
 route.delete("/:id/", authMiddleware, adminMiddleware, empleadosController.delete);
 
 export default route;

@@ -23,18 +23,19 @@ class authController {
         {
           id: empleado._id,
           username: empleado.username,
-          rol: empleado.rol
+          rol: empleado.rol,
         },
         process.env.JWT_SECRET,
-        { expiresIn: "1d" }
+        { expiresIn: "1d" },
       );
 
       res.status(200).json({
         message: "Login correcto",
-        token
+        token,
       });
     } catch (e) {
       res.status(500).send(e);
+      res.status(500).json({ error: e.message });
     }
   }
 }

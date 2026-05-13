@@ -4,7 +4,13 @@ import permisosRoutes from "./routes/permisos.routes.js"
 import empleadosRoutes from "./routes/empleados.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import dotenv from 'dotenv';
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./config/swagger.js";
 
+// cd backend
+// npm run dev 
+
+// http://localhost:3001/api-docs
 
 
 dotenv.config();
@@ -13,6 +19,9 @@ const app = express();
 
 // middleware
 app.use(express.json());
+
+// swagger
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // rutas
 app.use("/api/permisos", permisosRoutes);
