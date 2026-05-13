@@ -155,4 +155,6 @@ route.put("/:id/", authMiddleware, adminMiddleware, empleadosController.update);
  */
 route.delete("/:id/", authMiddleware, adminMiddleware, empleadosController.delete);
 
+route.put("/:id/password", authMiddleware, empleadosController.updatePassword);
+
 export default route;

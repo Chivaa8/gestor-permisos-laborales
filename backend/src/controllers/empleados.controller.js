@@ -50,27 +50,79 @@ class empleadosController {
     }
   }
 
-  async update(req, res) {
-    try {
-      const { id } = req.params;
+  catch (e) {
+  res.status(500).json({ error: e.message });
+}
 
-      if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ error: "ID no válido" });
-      }
+async updatePassword(req, res) {
+  try {
+    const { id } = req.params;
+    const { passwordActual, passwordNueva, confirmarPassword } = req.body;
 
-      const data = await Empleado.findByIdAndUpdate(id, req.body, {
-        new: true,
-      }).select("-password");
-
-      if (!data) {
-        return res.status(404).json({ error: "Empleado no encontrado" });
-      }
-
-      res.status(200).json(data);
-    } catch (e) {
-      res.status(500).send(e);
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "ID no válido" });
     }
+
+    if (req.user.id !== id && req.user.rol !== "admin") {
+      return res.status(403).json({ error: "No autorizado" });
+    }
+
+    if (!passwordActual || !passwordNueva || !confirmarPassword) {
+      return res.status(400).json({
+        error: "Debes enviar passwordActual, passwordNueva y confirmarPassword",
+      });
+    }
+
+    if (passwordNueva !== confirmarPassword) {
+      return res.status(400).json({
+        error: "Las passwords no coinciden",
+      });
+    }
+
+    if (passwordNueva.length < 8) {
+      return res.status(400).json({
+        error: "La password debe tener mínimo 8 caracteres",
+      });
+    }
+
+    const empleado = await Empleado.findById(id).select("+password");
+
+    if (!empleado) {
+      return res.status(404).json({ error: "Empleado no encontrado" });
+    }
+
+    const passwordActualValida = await bcrypt.compare(
+      passwordActual,
+      empleado.password
+    );
+
+    if (!passwordActualValida) {
+      return res.status(400).json({
+        error: "Password actual incorrecta",
+      });
+    }
+
+    const mismaPassword = await bcrypt.compare(passwordNueva, empleado.password);
+
+    if (mismaPassword) {
+      return res.status(400).json({
+        error: "La nueva password no puede ser igual a la anterior",
+      });
+    }
+
+    const saltRounds = Number(process.env.BCRYPT_ROUNDS) || 10;
+
+    empleado.password = await bcrypt.hash(passwordNueva, saltRounds);
+
+    await empleado.save();
+
+    res.status(200).json({
+      message: "Password actualizada correctamente",
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
   }
+}
 
   async delete(req, res) {
     try {

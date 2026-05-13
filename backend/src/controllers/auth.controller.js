@@ -7,7 +7,7 @@ class authController {
     try {
       const { username, password } = req.body;
 
-      const empleado = await Empleado.findOne({ username });
+      const empleado = await Empleado.findOne({ username }).select("+password");
 
       if (!empleado) {
         return res.status(400).json({ error: "Usuario no encontrado" });
@@ -34,7 +34,6 @@ class authController {
         token,
       });
     } catch (e) {
-      res.status(500).send(e);
       res.status(500).json({ error: e.message });
     }
   }
