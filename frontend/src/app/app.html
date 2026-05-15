@@ -1,0 +1,151 @@
+<div class="shell" [class.public-shell]="!showPrivateLayout()">
+  <aside class="sidebar" *ngIf="showPrivateLayout()">
+    <div class="brand">
+      <span class="brand-mark">
+        <img src="assets/travelconnect-logo.png" alt="TravelConnect">
+      </span>
+      <div>
+        <strong>TravelConnect</strong>
+        <small>{{ auth.currentUser()?.rol }}</small>
+      </div>
+    </div>
+
+    <nav aria-label="Navegacion principal">
+      <a routerLink="/dashboard" routerLinkActive="active">
+        <span class="nav-icon chart-icon" aria-hidden="true"></span>
+        <span>{{ t("dashboard") }}</span>
+      </a>
+      <a routerLink="/permisos" routerLinkActive="active">
+        <span class="nav-icon document-icon" aria-hidden="true"></span>
+        <span>{{ t("permissions") }}</span>
+      </a>
+      <a *ngIf="auth.isAdmin()" routerLink="/empleados" routerLinkActive="active">
+        <span class="nav-icon people-icon" aria-hidden="true"></span>
+        <span>{{ t("employees") }}</span>
+      </a>
+    </nav>
+
+    <button class="ghost" type="button" (click)="logout()">
+      <span class="nav-icon logout-icon" aria-hidden="true"></span>
+      <span>{{ t("logout") }}</span>
+    </button>
+  </aside>
+
+  <section class="main-area">
+    <header class="topbar" *ngIf="auth.isLoggedIn()">
+      <div class="topbar-spacer"></div>
+
+      <div class="language-switch" aria-label="Elegir idioma">
+        <button type="button" [class.active]="language.current() === 'es'" (click)="selectLanguage('es')">
+          <span class="flag flag-es" aria-hidden="true"></span>
+          Castellano
+        </button>
+        <button type="button" [class.active]="language.current() === 'ca'" (click)="selectLanguage('ca')">
+          <span class="flag flag-ca" aria-hidden="true"></span>
+          Català
+        </button>
+        <button type="button" [class.active]="language.current() === 'en'" (click)="selectLanguage('en')">
+          <span class="flag flag-en" aria-hidden="true"></span>
+          English
+        </button>
+      </div>
+
+      <div class="profile-area">
+        <div class="profile-label">
+          <span>{{ t("myProfile") }}</span>
+          <strong>{{ profile?.nombre || auth.currentUser()?.username }}</strong>
+        </div>
+
+        <button class="profile-trigger" type="button" (click)="toggleProfile()">
+          {{ initials() }}
+        </button>
+      </div>
+
+      <section class="profile-menu" *ngIf="profileOpen">
+        <div class="profile-head">
+          <div class="profile-photo">
+            <img *ngIf="profile?.foto; else menuInitials" [src]="profile?.foto" [alt]="profile?.nombre || 'Mi perfil'">
+            <ng-template #menuInitials>{{ initials() }}</ng-template>
+          </div>
+          <div>
+            <strong>{{ profile?.nombre }} {{ profile?.apellido }}</strong>
+            <span>@{{ profile?.username }}</span>
+          </div>
+        </div>
+
+        <div class="profile-actions" *ngIf="!profileAction">
+          <button type="button" (click)="startProfileAction('edit')">{{ t("editUser") }}</button>
+          <button type="button" [disabled]="!canAddInfo()" (click)="startProfileAction('add')">{{ t("addInfo") }}</button>
+          <button type="button" (click)="startProfileAction('photo')">{{ t("changePhoto") }}</button>
+          <button type="button" (click)="startProfileAction('password')">{{ t("changePassword") }}</button>
+          <button class="danger-link" type="button" (click)="logout()">{{ t("logout") }}</button>
+        </div>
+
+        <form class="profile-form" *ngIf="profileAction === 'edit'" (ngSubmit)="saveProfile()">
+          <div class="two-cols">
+            <label>{{ t("name") }}<input name="profileNombre" [(ngModel)]="profileForm.nombre" required></label>
+            <label>{{ t("firstSurname") }}<input name="profileApellido" [(ngModel)]="profileForm.apellido" required></label>
+          </div>
+          <label *ngIf="profile?.segundoApellido">{{ t("secondSurname") }}<input name="profileSegundoApellido" [(ngModel)]="profileForm.segundoApellido"></label>
+          <label>{{ t("email") }}<input name="profileEmail" [(ngModel)]="profileForm.email" required></label>
+          <label>{{ t("user") }}<input name="profileUsername" [(ngModel)]="profileForm.username" required></label>
+
+          <div class="profile-buttons">
+            <button type="submit">{{ t("save") }}</button>
+            <button class="secondary-action" type="button" (click)="cancelProfileEdit()">{{ t("cancel") }}</button>
+          </div>
+        </form>
+
+        <form class="profile-form" *ngIf="profileAction === 'add'" (ngSubmit)="saveProfile()">
+          <label *ngIf="!profile?.segundoApellido">{{ t("secondSurname") }}<input name="profileSegundoApellidoAdd" [(ngModel)]="profileForm.segundoApellido" required></label>
+          <p class="profile-empty" *ngIf="!canAddInfo()">{{ t("noPendingInfo") }}</p>
+
+          <div class="profile-buttons">
+            <button type="submit" [disabled]="!canAddInfo() || !profileForm.segundoApellido">{{ t("save") }}</button>
+            <button class="secondary-action" type="button" (click)="cancelProfileEdit()">{{ t("cancel") }}</button>
+          </div>
+        </form>
+
+        <form class="profile-form" *ngIf="profileAction === 'photo'" (ngSubmit)="saveProfile()">
+          <div class="photo-preview">
+            <img *ngIf="profileForm.foto; else photoPreviewInitials" [src]="profileForm.foto" [alt]="profileForm.nombre || 'Nueva foto'">
+            <ng-template #photoPreviewInitials>{{ initials() }}</ng-template>
+          </div>
+          <label>{{ t("photoUrl") }}<input name="profileFoto" [(ngModel)]="profileForm.foto"></label>
+
+          <div class="profile-buttons">
+            <button type="submit">{{ t("savePhoto") }}</button>
+            <button class="secondary-action" type="button" (click)="cancelProfileEdit()">{{ t("cancel") }}</button>
+          </div>
+        </form>
+
+        <form class="profile-form" *ngIf="profileAction === 'password'" (ngSubmit)="savePassword()">
+          <label>
+            {{ t("currentPassword") }}
+            <input name="currentPassword" type="password" [(ngModel)]="passwordForm.passwordActual" autocomplete="current-password" required>
+          </label>
+          <label>
+            {{ t("newPassword") }}
+            <input name="newPassword" type="password" [(ngModel)]="passwordForm.passwordNueva" autocomplete="new-password" required>
+          </label>
+          <label>
+            {{ t("confirmNewPassword") }}
+            <input name="confirmNewPassword" type="password" [(ngModel)]="passwordForm.confirmarPassword" autocomplete="new-password" required>
+          </label>
+
+          <div class="profile-buttons">
+            <button type="submit" [disabled]="!passwordForm.passwordActual || !passwordForm.passwordNueva || !passwordForm.confirmarPassword">{{ t("savePassword") }}</button>
+            <button class="secondary-action" type="button" (click)="cancelProfileEdit()">{{ t("cancel") }}</button>
+          </div>
+        </form>
+
+        <p class="profile-success" *ngIf="profileSuccess">{{ profileSuccess }}</p>
+        <p class="profile-error" *ngIf="profileError">{{ profileError }}</p>
+      </section>
+    </header>
+
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+  </section>
+</div>

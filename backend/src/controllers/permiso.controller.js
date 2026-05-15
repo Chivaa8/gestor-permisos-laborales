@@ -7,6 +7,31 @@ class permisoController {
 
   crearPermiso = async (req, res) => {
     try {
+      const { fechaInicio, fechaFin } = req.body;
+      const inicio = new Date(fechaInicio);
+      const fin = new Date(fechaFin);
+      const hoy = new Date();
+
+      hoy.setHours(0, 0, 0, 0);
+      inicio.setHours(0, 0, 0, 0);
+      fin.setHours(0, 0, 0, 0);
+
+      if (Number.isNaN(inicio.getTime()) || Number.isNaN(fin.getTime())) {
+        return res.status(400).json({ error: "Las fechas no son validas" });
+      }
+
+      if (inicio < hoy) {
+        return res.status(400).json({ error: "La fecha de inicio no puede ser anterior a hoy" });
+      }
+
+      if (fin < hoy) {
+        return res.status(400).json({ error: "La fecha final no puede ser anterior a hoy" });
+      }
+
+      if (fin < inicio) {
+        return res.status(400).json({ error: "La fecha final no puede ser anterior a la fecha de inicio" });
+      }
+
       const nuevoPermiso = {
         // para que mande esto especificamente sino mandaría cualquier cosa
         ...req.body,

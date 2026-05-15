@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import Empleado from "../models/employee.model.js";
+import Permiso from "../schemas/permiso.schema.js";
 
 class empleadosController {
   async create(req, res) {
@@ -46,6 +47,10 @@ class empleadosController {
         return res.status(404).json({ error: "Empleado no encontrado" });
       }
 
+      if (req.user.rol !== "admin" && req.user.id !== id) {
+        return res.status(403).json({ error: "No autorizado" });
+      }
+
       res.status(200).json(data);
     } catch (e) {
       res.status(500).json({ error: e.message });
@@ -61,9 +66,19 @@ class empleadosController {
       }
 
       const { password, ...datosActualizables } = req.body;
+      const esPerfilPropio = req.user.id === id;
+
+      if (req.user.rol !== "admin" && !esPerfilPropio) {
+        return res.status(403).json({ error: "No autorizado" });
+      }
+
+      if (req.user.rol !== "admin") {
+        delete datosActualizables.rol;
+      }
 
       const data = await Empleado.findByIdAndUpdate(id, datosActualizables, {
         returnDocument: "after",
+        runValidators: true,
       }).select("-password");
 
       if (!data) {
@@ -160,7 +175,12 @@ class empleadosController {
         return res.status(404).json({ error: "Empleado no encontrado" });
       }
 
-      res.status(200).json({ message: "Empleado eliminado" });
+      const permisosEliminados = await Permiso.deleteMany({ empId: id });
+
+      res.status(200).json({
+        message: "Empleado despedido",
+        permisosEliminados: permisosEliminados.deletedCount,
+      });
     } catch (e) {
       res.status(500).json({ error: e.message });
     }

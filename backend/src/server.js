@@ -5,6 +5,8 @@ import { fileURLToPath } from "node:url";
 import permisosRoutes from "./routes/permisos.routes.js";
 import empleadosRoutes from "./routes/empleados.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import tiposPermisoRoutes from "./routes/tiposPermiso.routes.js";
+import TipoPermiso from "./models/tipoPermiso.model.js";
 import dotenv from "dotenv";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger.js";
@@ -21,6 +23,23 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/permisos", permisosRoutes);
 app.use("/api/empleados", empleadosRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/tipos-permiso", tiposPermisoRoutes);
+
+const defaultTiposPermiso = [
+  "hospitalizacion",
+  "matrimonio",
+  "traslado",
+  "malaltia",
+  "naixement",
+];
+
+async function seedTiposPermiso() {
+  await Promise.all(
+    defaultTiposPermiso.map((nombre) =>
+      TipoPermiso.updateOne({ nombre }, { $setOnInsert: { nombre } }, { upsert: true }),
+    ),
+  );
+}
 
 async function connectDB() {
   if (mongoose.connection.readyState === 1) {
@@ -33,6 +52,7 @@ async function connectDB() {
 async function startServer() {
   try {
     await connectDB();
+    await seedTiposPermiso();
     console.log("Conectado correctamente a MongoDB");
 
     const PORT = process.env.PORT || 3000;
@@ -49,4 +69,4 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   startServer();
 }
 
-export { app, connectDB, startServer };
+export { app, connectDB, seedTiposPermiso, startServer };

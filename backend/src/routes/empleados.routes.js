@@ -66,7 +66,7 @@ route.post("/", authMiddleware, adminMiddleware, empleadosController.create);
  *       404:
  *         description: Empleado no encontrado
  */
-route.get("/:id", authMiddleware, adminMiddleware, empleadosController.getOne);
+route.get("/:id", authMiddleware, empleadosController.getOne);
 
 //todos los empleados 
 /**
@@ -130,7 +130,7 @@ route.get("/", authMiddleware, adminMiddleware, empleadosController.getAll);
  *       404:
  *         description: Empleado no encontrado
  */
-route.put("/:id/", authMiddleware, adminMiddleware, empleadosController.update);
+route.put("/:id/", authMiddleware, empleadosController.update);
 
 // despedir
 /**
