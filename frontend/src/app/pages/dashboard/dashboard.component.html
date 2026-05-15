@@ -1,0 +1,112 @@
+<header class="page-header">
+  <div>
+    <span class="eyebrow">{{ t("dashboardEyebrow") }}</span>
+    <h1>{{ t("dashboard") }}</h1>
+    <p>{{ auth.isAdmin() ? t("dashboardAdminText") : t("dashboardBasicText") }}</p>
+  </div>
+  <img class="page-logo" src="assets/travelconnect-logo.png" alt="TravelConnect">
+</header>
+
+<section class="dashboard-grid" *ngIf="auth.isAdmin(); else basicHome">
+  <article class="hero-panel">
+    <div>
+      <span class="eyebrow">{{ t("totalRequests") }}</span>
+      <strong>{{ total() }}</strong>
+      <p>{{ t("registeredPermits") }}</p>
+    </div>
+    <div class="mini-metrics">
+      <span *ngFor="let estado of orden">
+        <i [style.background]="colors[estado]"></i>
+        {{ label(estado) }} {{ estados[estado] }}
+      </span>
+    </div>
+  </article>
+
+  <article class="chart-panel">
+    <p class="error" *ngIf="error">{{ error }}</p>
+    <div class="pie-wrap">
+      <div class="pie" [style.background]="pieChart()">
+        <div class="pie-hole">
+          <strong>{{ total() }}</strong>
+          <span>{{ t("total") }}</span>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article *ngFor="let estado of orden" class="stat-card">
+    <div class="stat-top">
+      <span class="dot" [style.background]="colors[estado]"></span>
+      <span>{{ label(estado) }}</span>
+    </div>
+    <strong>{{ estados[estado] }}</strong>
+    <div class="bar">
+      <i [style.width.%]="percentage(estado)" [style.background]="colors[estado]"></i>
+    </div>
+    <small>{{ percentage(estado) }}% {{ t("total") }}</small>
+  </article>
+
+  <article class="wide-card">
+    <div class="panel-title">
+      <span>{{ t("roles") }}</span>
+      <h2>{{ t("adminsAndUsers") }}</h2>
+    </div>
+    <div class="split-bars">
+      <div>
+        <div class="bar-label">
+          <span>{{ t("admins") }}</span>
+          <strong>{{ admins() }}</strong>
+        </div>
+        <div class="bar tall"><i [style.width.%]="roleBar('admin')"></i></div>
+      </div>
+      <div>
+        <div class="bar-label">
+          <span>{{ t("basicUsers") }}</span>
+          <strong>{{ basics() }}</strong>
+        </div>
+        <div class="bar tall basic"><i [style.width.%]="roleBar('basic')"></i></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="wide-card">
+    <div class="panel-title">
+      <span>{{ t("activity") }}</span>
+      <h2>{{ t("employeesWithPermits") }}</h2>
+    </div>
+    <div class="donut-row">
+      <div class="mini-donut" [style.background]="'conic-gradient(#2d6cdf 0 ' + permisosBar('con') + '%, #dce5f2 ' + permisosBar('con') + '% 100%)'">
+        <strong>{{ empleadosConPermisos() }}</strong>
+      </div>
+      <div class="activity-list">
+        <span><b>{{ empleadosConPermisos() }}</b> {{ t("withPermitsCreated") }}</span>
+        <span><b>{{ empleadosSinPermisos() }}</b> {{ t("withoutPermitsCreated") }}</span>
+        <span><b>{{ totalEmpleados() }}</b> {{ t("totalEmployees") }}</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="wide-card bars-card">
+    <div class="panel-title">
+      <span>{{ t("statuses") }}</span>
+      <h2>{{ t("quickComparison") }}</h2>
+    </div>
+    <div class="vertical-bars">
+      <div *ngFor="let estado of orden">
+        <span class="vbar">
+          <i [style.height.%]="barHeight(estado)" [style.background]="colors[estado]"></i>
+        </span>
+        <strong>{{ estados[estado] }}</strong>
+        <small>{{ label(estado) }}</small>
+      </div>
+    </div>
+  </article>
+</section>
+
+<ng-template #basicHome>
+  <section class="welcome-panel">
+    <span class="eyebrow">{{ t("welcome") }}</span>
+    <h2>{{ t("basicWelcomeTitle") }}</h2>
+    <p>{{ t("basicWelcomeText") }}</p>
+  </section>
+</ng-template>
