@@ -1,0 +1,94 @@
+<section class="login-page">
+  <div class="login-card">
+    <div class="login-heading">
+      <span class="eyebrow">{{ t("appName") }}</span>
+      <h1>{{ mode === "login" ? t("loginTitle") : mode === "register" ? t("createUser") : "Recuperar contraseña" }}</h1>
+      <p>{{ mode === "login" ? t("loginSubtitle") : mode === "register" ? t("registerSubtitle") : "Te enviaremos un enlace que caduca en 5 minutos." }}</p>
+    </div>
+
+    <form class="login-box" *ngIf="mode === 'login'" (ngSubmit)="submit()">
+      <label>
+        {{ t("user") }}
+        <input name="username" [(ngModel)]="username" autocomplete="username" required>
+      </label>
+
+      <label>
+        {{ t("password") }}
+        <input name="password" type="password" [(ngModel)]="password" autocomplete="current-password" required>
+      </label>
+
+      <button type="submit" [disabled]="loading || !username || !password">
+        {{ loading ? t("entering") : t("enter") }}
+      </button>
+    </form>
+
+    <form class="login-box" *ngIf="mode === 'register'" (ngSubmit)="register()">
+      <div class="two-cols">
+        <label>
+          {{ t("name") }}
+          <input name="nombre" [(ngModel)]="nombre" required>
+        </label>
+
+        <label>
+          {{ t("firstSurname") }}
+          <input name="apellido" [(ngModel)]="apellido" required>
+        </label>
+      </div>
+
+      <label>
+        {{ t("secondSurname") }}
+        <input name="segundoApellido" [(ngModel)]="segundoApellido">
+      </label>
+
+      <label>
+        {{ t("email") }}
+        <input name="email" [(ngModel)]="email" autocomplete="email" required>
+      </label>
+
+      <label>
+        {{ t("user") }}
+        <input name="registerUsername" [(ngModel)]="username" autocomplete="username" required>
+      </label>
+
+      <div class="two-cols">
+        <label>
+          {{ t("password") }}
+          <input name="registerPassword" type="password" [(ngModel)]="password" autocomplete="new-password" required>
+        </label>
+
+        <label>
+          {{ t("confirm") }}
+          <input name="confirmPassword" type="password" [(ngModel)]="confirmPassword" autocomplete="new-password" required>
+        </label>
+      </div>
+
+      <button type="submit" [disabled]="loading || !nombre || !apellido || !email || !username || !password || !confirmPassword">
+        {{ loading ? t("creating") : t("createUser") }}
+      </button>
+    </form>
+
+    <form class="login-box" *ngIf="mode === 'forgot'" (ngSubmit)="requestPasswordReset()">
+      <label>
+        {{ t("email") }}
+        <input name="recoveryEmail" type="email" [(ngModel)]="recoveryEmail" autocomplete="email" required>
+      </label>
+
+      <button type="submit" [disabled]="loading || !recoveryEmail">
+        {{ loading ? "Enviando..." : "Enviar enlace" }}
+      </button>
+    </form>
+
+    <p class="error" *ngIf="error">{{ error }}</p>
+    <p class="info" *ngIf="info">{{ info }}</p>
+    <p class="info reset-link" *ngIf="resetUrl">
+      Modo local: <a [href]="resetUrl">{{ resetUrl }}</a>
+    </p>
+
+    <div class="login-links">
+      <button type="button" class="link-button" *ngIf="mode !== 'forgot'" (click)="showForgotPassword()">{{ t("forgotPassword") }}</button>
+      <button type="button" class="link-button" *ngIf="mode === 'login'" (click)="switchMode('register')">{{ t("createUser") }}</button>
+      <button type="button" class="link-button" *ngIf="mode === 'register'" (click)="switchMode('login')">{{ t("alreadyHaveUser") }}</button>
+      <button type="button" class="link-button" *ngIf="mode === 'forgot'" (click)="switchMode('login')">Volver al login</button>
+    </div>
+  </div>
+</section>
