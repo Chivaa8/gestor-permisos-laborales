@@ -1,0 +1,90 @@
+<header class="page-header">
+  <div>
+    <span class="eyebrow">{{ t("workPermits") }}</span>
+    <h1>{{ t("permissions") }}</h1>
+    <p>{{ auth.isAdmin() ? t("manageAllRequests") : t("createAndViewRequests") }}</p>
+  </div>
+  <img class="page-logo" src="assets/travelconnect-logo.png" alt="TravelConnect">
+</header>
+
+<section class="layout">
+  <form class="panel form" (ngSubmit)="create()">
+    <div class="panel-title">
+      <span>{{ t("newRequest") }}</span>
+      <h2>{{ t("createPermit") }}</h2>
+    </div>
+
+    <div class="date-grid">
+      <label>{{ t("startDate") }}<input name="fechaInicio" type="date" [min]="today" [(ngModel)]="form.fechaInicio" required></label>
+      <label>{{ t("endDate") }}<input name="fechaFin" type="date" [min]="form.fechaInicio || today" [(ngModel)]="form.fechaFin" required></label>
+    </div>
+
+    <label>
+      {{ t("type") }}
+      <select name="tipo" [(ngModel)]="form.tipo" required>
+        <option value="">{{ t("select") }}</option>
+        <option *ngFor="let tipo of tipos" [value]="tipo._id">{{ tipo.nombre }}</option>
+      </select>
+    </label>
+
+    <label>{{ t("description") }}<textarea name="descripcion" [(ngModel)]="form.descripcion" rows="5" required></textarea></label>
+    <button class="primary-action" type="submit" [disabled]="!form.fechaInicio || !form.fechaFin || !form.tipo || !form.descripcion">{{ t("createPermit") }}</button>
+    <p class="success" *ngIf="success">{{ success }}</p>
+    <p class="error" *ngIf="error">{{ error }}</p>
+  </form>
+
+  <section class="panel table-panel">
+    <div class="panel-title list-title">
+      <span>{{ auth.isAdmin() ? t("administration") : t("history") }}</span>
+      <h2>{{ auth.isAdmin() ? t("receivedRequests") : t("myPermits") }}</h2>
+    </div>
+
+    <div class="filters" *ngIf="auth.isAdmin()">
+      <select name="estado" [(ngModel)]="filters.estado" (change)="load()">
+        <option value="">{{ t("allStatuses") }}</option>
+        <option value="pendiente">{{ estadoTexto("pendiente") }}</option>
+        <option value="aprobado">{{ estadoTexto("aprobado") }}</option>
+        <option value="rechazado">{{ estadoTexto("rechazado") }}</option>
+      </select>
+      <select name="empId" [(ngModel)]="filters.empId" (change)="load()">
+        <option value="">{{ t("allCreators") }}</option>
+        <option *ngFor="let empleado of empleados" [value]="empleado._id">{{ empleado.nombre }} {{ empleado.apellido }}</option>
+      </select>
+      <select name="empTramitador" [(ngModel)]="filters.empTramitador" (change)="load()">
+        <option value="">{{ t("allManagers") }}</option>
+        <option *ngFor="let empleado of empleados" [value]="empleado._id">{{ empleado.nombre }} {{ empleado.apellido }}</option>
+      </select>
+    </div>
+
+    <div class="empty-state" *ngIf="permisos.length === 0">
+      {{ t("noPermits") }}
+    </div>
+
+    <div class="permission-list" *ngIf="permisos.length > 0">
+      <article class="permission-card" *ngFor="let permiso of permisos">
+        <div class="employee">
+          <strong>{{ empleadoNombre(permiso.empId) }}</strong>
+          <p>{{ tipoNombre(permiso.tipo) }}</p>
+        </div>
+
+        <div class="period">
+          <span>{{ permiso.fechaInicio | date: "dd/MM/yyyy" }}</span>
+          <span>{{ permiso.fechaFin | date: "dd/MM/yyyy" }}</span>
+        </div>
+
+        <span [class]="permisoEstadoClass(permiso)">{{ estadoTexto(permiso.estado) }}</span>
+
+        <div class="tramitador">
+          <small>{{ t("manager") }}</small>
+          <span>{{ empleadoNombre(permiso.empTramitador) }}</span>
+        </div>
+
+        <div class="row-actions" *ngIf="auth.isAdmin()">
+          <button class="approve" type="button" *ngIf="permiso.estado === 'pendiente'" (click)="approve(permiso._id)">{{ t("approve") }}</button>
+          <button class="reject" type="button" *ngIf="permiso.estado === 'pendiente'" (click)="reject(permiso._id)">{{ t("reject") }}</button>
+          <button class="danger" type="button" (click)="delete(permiso._id)">{{ t("delete") }}</button>
+        </div>
+      </article>
+    </div>
+  </section>
+</section>
