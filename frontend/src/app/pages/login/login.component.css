@@ -9,8 +9,12 @@
     #f3f6fb;
 }
 
+.login-page * {
+  box-sizing: border-box;
+}
+
 .login-card {
-  width: min(520px, 100%);
+  width: min(620px, 100%);
   display: grid;
   gap: 20px;
   padding: 30px;
@@ -57,6 +61,8 @@ label {
 }
 
 input {
+  width: 100%;
+  min-width: 0;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   padding: 11px 12px;

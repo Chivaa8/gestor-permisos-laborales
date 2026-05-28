@@ -330,4 +330,4 @@ npm run build
 
 ## Autores
 
-Oriol Chiva Hidalgo
+**Oriol Chiva Hidalgo**
