@@ -161,6 +161,46 @@ class empleadosController {
     }
   }
 
+  async ajustarSueldo(req, res) {
+    try {
+      const { id } = req.params;
+      const { cantidad } = req.body;
+      const operacion = req.path.includes("bajar-sueldo") ? "bajar" : "subir";
+
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: "ID no válido" });
+      }
+
+      const cantidadNumerica = Number(cantidad);
+
+      if (!Number.isFinite(cantidadNumerica) || cantidadNumerica <= 0) {
+        return res.status(400).json({ error: "La cantidad debe ser mayor que 0" });
+      }
+
+      const empleado = await Empleado.findById(id).select("-password");
+
+      if (!empleado) {
+        return res.status(404).json({ error: "Empleado no encontrado" });
+      }
+
+      const sueldoActual = empleado.sueldo || 0;
+      const sueldoNuevo = operacion === "subir"
+        ? sueldoActual + cantidadNumerica
+        : sueldoActual - cantidadNumerica;
+
+      if (sueldoNuevo < 0) {
+        return res.status(400).json({ error: "El sueldo no puede quedar en negativo" });
+      }
+
+      empleado.sueldo = sueldoNuevo;
+      await empleado.save();
+
+      res.status(200).json(empleado);
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+  }
+
   async delete(req, res) {
     try {
       const { id } = req.params;

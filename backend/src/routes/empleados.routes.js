@@ -39,6 +39,13 @@ const route = express.Router();
  *               rol:
  *                 type: string
  *                 example: admin
+ *               sueldo:
+ *                 type: number
+ *                 example: 1800
+ *               contratoHasta:
+ *                 type: string
+ *                 format: date
+ *                 example: 2026-12-31
  *     responses:
  *       201:
  *         description: Empleado contratado
@@ -124,6 +131,13 @@ route.get("/", authMiddleware, adminMiddleware, empleadosController.getAll);
  *               rol:
  *                 type: string
  *                 example: basic
+ *               sueldo:
+ *                 type: number
+ *                 example: 1950
+ *               contratoHasta:
+ *                 type: string
+ *                 format: date
+ *                 example: 2027-06-30
  *     responses:
  *       200:
  *         description: Empleado actualizado
@@ -200,5 +214,71 @@ route.delete("/:id/", authMiddleware, adminMiddleware, empleadosController.delet
  *         description: Empleado no encontrado
  */
 route.put("/:id/password", authMiddleware, empleadosController.updatePassword);
+
+/**
+ * @swagger
+ * /api/empleados/{id}/subir-sueldo:
+ *   put:
+ *     summary: Subir sueldo de un empleado
+ *     tags: [Empleados]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - cantidad
+ *             properties:
+ *               cantidad:
+ *                 type: number
+ *                 example: 150
+ *     responses:
+ *       200:
+ *         description: Sueldo actualizado
+ */
+route.put("/:id/subir-sueldo", authMiddleware, adminMiddleware, empleadosController.ajustarSueldo);
+
+/**
+ * @swagger
+ * /api/empleados/{id}/bajar-sueldo:
+ *   put:
+ *     summary: Bajar sueldo de un empleado
+ *     tags: [Empleados]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - cantidad
+ *             properties:
+ *               cantidad:
+ *                 type: number
+ *                 example: 150
+ *     responses:
+ *       200:
+ *         description: Sueldo actualizado
+ *       400:
+ *         description: Cantidad incorrecta o sueldo negativo
+ */
+route.put("/:id/bajar-sueldo", authMiddleware, adminMiddleware, empleadosController.ajustarSueldo);
 
 export default route;

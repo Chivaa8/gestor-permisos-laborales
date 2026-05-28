@@ -29,6 +29,8 @@ Aplicación web para gestionar permisos laborales de empleados. El proyecto esta
   - Editar empleados.
   - Listar plantilla activa.
   - Despedir empleados.
+  - Gestionar sueldo y fecha de finalizacion de contrato.
+  - Subir o bajar sueldo desde el panel de administracion.
 - Al despedir un empleado se eliminan automáticamente sus permisos asociados.
 - CRUD de permisos:
   - Crear permisos.
@@ -158,16 +160,41 @@ Importante: `.env` esta ignorado por Git para no subir secretos al repositorio.
 
 ## Docker
 
-El proyecto incluye `docker-compose.yml` con tres servicios:
+El proyecto está preparado para ejecutarse completo con Docker Compose. La configuración levanta la aplicación en tres servicios independientes:
 
-- `mongodb`: base de datos MongoDB.
-- `backend`: API Node.js/Express.
-- `frontend`: aplicacion Angular servida con Nginx.
+- `frontend`: aplicación Angular compilada y servida con Nginx.
+- `backend`: API REST desarrollada con Node.js y Express.
+- `mongodb`: base de datos MongoDB con persistencia en volumen.
 
-Arrancar todo:
+Las imágenes propias del proyecto están publicadas en Docker Hub:
+
+```text
+chivaa8/travelconnect-frontend:1.0
+chivaa8/travelconnect-backend:1.0
+```
+
+La imagen de MongoDB utiliza la imagen oficial:
+
+```text
+mongo:7
+```
+
+El archivo `docker-compose.yml` también define:
+
+- Red personalizada `travelconnect-net` para aislar la comunicación entre contenedores.
+- Volumen `mongodb_data` para conservar los datos de MongoDB aunque se reinicien los contenedores.
+- Variables de entorno para configurar backend, conexión con MongoDB, JWT y correo SMTP.
+
+Arrancar todo construyendo las imágenes localmente:
 
 ```bash
 docker compose up --build
+```
+
+Arrancar usando las imágenes ya publicadas en Docker Hub:
+
+```bash
+docker compose up
 ```
 
 URLs:
@@ -189,6 +216,16 @@ Parar y eliminar también el volumen de MongoDB:
 
 ```bash
 docker compose down -v
+```
+
+Comandos usados para publicar las imágenes:
+
+```bash
+docker compose build
+docker tag gestor-permisos-laborales-backend:latest chivaa8/travelconnect-backend:1.0
+docker tag gestor-permisos-laborales-frontend:latest chivaa8/travelconnect-frontend:1.0
+docker push chivaa8/travelconnect-backend:1.0
+docker push chivaa8/travelconnect-frontend:1.0
 ```
 
 ## Documentación Swagger
@@ -226,6 +263,8 @@ Incluye documentacion para:
 | POST | `/api/empleados` | Contratar empleado |
 | PUT | `/api/empleados/:id` | Editar empleado |
 | PUT | `/api/empleados/:id/password` | Cambiar contrasena |
+| PUT | `/api/empleados/:id/subir-sueldo` | Subir sueldo |
+| PUT | `/api/empleados/:id/bajar-sueldo` | Bajar sueldo |
 | DELETE | `/api/empleados/:id` | Despedir empleado |
 
 ### Permisos
@@ -291,4 +330,4 @@ npm run build
 
 ## Autores
 
-Proyecto desarrollado como trabajo final de DAW/DAM para la gestión de permisos laborales.
+Oriol Chiva Hidalgo

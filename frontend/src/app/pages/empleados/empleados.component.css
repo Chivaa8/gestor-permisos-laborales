@@ -110,6 +110,27 @@ select:focus {
   border-color: #2f6f5f;
 }
 
+.salary-actions {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(110px, 1fr) auto auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.salary-actions input {
+  min-width: 0;
+}
+
+.salary-up {
+  background: #1f8a5b;
+}
+
+.salary-down {
+  background: #f2b84b;
+  color: #2d2107;
+}
+
 .actions,
 .row-actions {
   display: flex;
@@ -216,7 +237,8 @@ button {
 
 @media (max-width: 560px) {
   .two-cols,
-  .employee-card {
+  .employee-card,
+  .salary-actions {
     grid-template-columns: 1fr;
   }
 

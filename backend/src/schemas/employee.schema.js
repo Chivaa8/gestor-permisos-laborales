@@ -31,6 +31,14 @@ const employeeSchema = new mongoose.Schema({
         type: String
     
     },
+    sueldo: {
+        type: Number,
+        default: 0,
+        min: 0,
+    },
+    contratoHasta: {
+        type: Date,
+    },
     rol: {
         type: String, 
         enum: ["admin", "basic"],

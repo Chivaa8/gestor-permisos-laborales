@@ -6,8 +6,11 @@ services:
       - "27017:27017"
     volumes:
       - mongodb_data:/data/db
+    networks:
+      - travelconnect-net
 
   backend:
+    image: chivaa8/travelconnect-backend:1.0
     build:
       context: ./backend
     container_name: gestor-permisos-backend
@@ -27,8 +30,11 @@ services:
       SMTP_FROM: ${SMTP_FROM:-}
     ports:
       - "3001:3001"
+    networks:
+      - travelconnect-net
 
   frontend:
+    image: chivaa8/travelconnect-frontend:1.0
     build:
       context: ./frontend
     container_name: gestor-permisos-frontend
@@ -36,6 +42,12 @@ services:
       - backend
     ports:
       - "4200:80"
+    networks:
+      - travelconnect-net
 
 volumes:
   mongodb_data:
+
+networks:
+  travelconnect-net:
+    driver: bridge

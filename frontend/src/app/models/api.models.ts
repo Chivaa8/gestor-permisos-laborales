@@ -37,6 +37,8 @@ export interface Empleado {
   email: string;
   username: string;
   foto?: string;
+  sueldo?: number;
+  contratoHasta?: string;
   rol: Rol;
 }
 
@@ -48,6 +50,8 @@ export interface EmpleadoForm {
   username: string;
   password?: string;
   foto?: string;
+  sueldo?: number;
+  contratoHasta?: string;
   rol: Rol;
 }
 

@@ -29,6 +29,14 @@ export class EmpleadosService {
     return this.http.put<{ message: string }>(`${this.apiUrl}/${id}/password`, data);
   }
 
+  subirSueldo(id: string, cantidad: number): Observable<Empleado> {
+    return this.http.put<Empleado>(`${this.apiUrl}/${id}/subir-sueldo`, { cantidad });
+  }
+
+  bajarSueldo(id: string, cantidad: number): Observable<Empleado> {
+    return this.http.put<Empleado>(`${this.apiUrl}/${id}/bajar-sueldo`, { cantidad });
+  }
+
   delete(id: string): Observable<{ message: string; permisosEliminados?: number }> {
     return this.http.delete<{ message: string; permisosEliminados?: number }>(`${this.apiUrl}/${id}`);
   }

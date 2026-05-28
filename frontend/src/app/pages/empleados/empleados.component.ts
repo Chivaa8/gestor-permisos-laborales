@@ -13,6 +13,8 @@ const emptyForm = (): EmpleadoForm => ({
   username: "",
   password: "",
   foto: "",
+  sueldo: 0,
+  contratoHasta: "",
   rol: "basic",
 });
 
@@ -29,6 +31,7 @@ export class EmpleadosComponent implements OnInit {
   editingId = "";
   error = "";
   success = "";
+  salaryAmount: Record<string, number> = {};
 
   constructor(
     private readonly empleadosService: EmpleadosService,
@@ -52,7 +55,11 @@ export class EmpleadosComponent implements OnInit {
 
   edit(empleado: Empleado): void {
     this.editingId = empleado._id;
-    this.form = { ...empleado, password: "" };
+    this.form = {
+      ...empleado,
+      contratoHasta: empleado.contratoHasta ? empleado.contratoHasta.slice(0, 10) : "",
+      password: "",
+    };
   }
 
   cancel(): void {
@@ -86,6 +93,39 @@ export class EmpleadosComponent implements OnInit {
         this.load();
       },
       error: () => (this.error = "No se ha podido eliminar el empleado"),
+    });
+  }
+
+  formatSalary(sueldo?: number): string {
+    return new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(sueldo || 0);
+  }
+
+  formatContractDate(fecha?: string): string {
+    return fecha ? new Intl.DateTimeFormat("es-ES").format(new Date(fecha)) : "Sin fecha";
+  }
+
+  adjustSalary(id: string, direction: "up" | "down"): void {
+    const cantidad = Number(this.salaryAmount[id]);
+
+    if (!Number.isFinite(cantidad) || cantidad <= 0) {
+      this.error = "Indica una cantidad mayor que 0";
+      return;
+    }
+
+    this.error = "";
+    this.success = "";
+
+    const request = direction === "up"
+      ? this.empleadosService.subirSueldo(id, cantidad)
+      : this.empleadosService.bajarSueldo(id, cantidad);
+
+    request.subscribe({
+      next: () => {
+        this.salaryAmount[id] = 0;
+        this.success = direction === "up" ? "Sueldo subido correctamente" : "Sueldo bajado correctamente";
+        this.load();
+      },
+      error: (response) => (this.error = response.error?.error || "No se ha podido actualizar el sueldo"),
     });
   }
 }
