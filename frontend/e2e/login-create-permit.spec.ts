@@ -5,7 +5,7 @@ test("el usuario se registra, inicia sesion y crea un permiso", async ({ page })
   const username = `e2e_${id}`;
   const password = "Password123";
 
-  await page.goto("/login");
+  await page.goto("/");
   await page.getByRole("button", { name: "Crear usuario" }).click();
 
   await page.locator('input[name="nombre"]').fill("E2E");
@@ -24,6 +24,10 @@ test("el usuario se registra, inicia sesion y crea un permiso", async ({ page })
   await page.getByRole("button", { name: "Entrar" }).click();
 
   await expect(page).toHaveURL(/\/dashboard/);
+
+  await page.goto("/login");
+  await expect(page).toHaveURL(/\/dashboard/);
+
   await page.getByRole("link", { name: /Permisos/ }).click();
 
   const today = new Date();

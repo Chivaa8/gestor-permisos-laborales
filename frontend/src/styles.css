@@ -5,6 +5,12 @@
   color: #172033;
 }
 
+:root.dark-theme {
+  color-scheme: dark;
+  background: #0f1725;
+  color: #e8eef8;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -17,6 +23,12 @@ body {
     #f3f6fb;
 }
 
+:root.dark-theme body {
+  background:
+    linear-gradient(180deg, rgba(15, 23, 37, 0.96), rgba(20, 30, 48, 0.94)),
+    #0f1725;
+}
+
 button,
 input,
 select,
@@ -26,4 +38,127 @@ textarea {
 
 button {
   cursor: pointer;
+}
+
+:root.dark-theme .shell {
+  background: #0f1725;
+  color: #e8eef8;
+}
+
+:root.dark-theme .topbar {
+  background: rgba(15, 23, 37, 0.9);
+}
+
+:root.dark-theme .sidebar {
+  background:
+    linear-gradient(180deg, rgba(78, 211, 154, 0.1), transparent 36%),
+    linear-gradient(180deg, #0b1220 0%, #111c2f 100%);
+}
+
+:root.dark-theme .language-switch,
+:root.dark-theme .theme-toggle,
+:root.dark-theme .profile-menu,
+:root.dark-theme .login-card,
+:root.dark-theme .panel,
+:root.dark-theme .stat-card,
+:root.dark-theme .chart-card,
+:root.dark-theme .employee-card,
+:root.dark-theme .permission-card,
+:root.dark-theme .empty-state {
+  border-color: #2b3a52;
+  background: #172033;
+  color: #e8eef8;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+}
+
+:root.dark-theme .page-logo {
+  filter: invert(1) contrast(1.05);
+}
+
+:root.dark-theme h1,
+:root.dark-theme h2,
+:root.dark-theme strong,
+:root.dark-theme label,
+:root.dark-theme .person-main,
+:root.dark-theme .employee,
+:root.dark-theme .period,
+:root.dark-theme .tramitador,
+:root.dark-theme .profile-form label {
+  color: #f8fbff;
+}
+
+:root.dark-theme p,
+:root.dark-theme small,
+:root.dark-theme span,
+:root.dark-theme .page-header p,
+:root.dark-theme .login-heading p,
+:root.dark-theme .person-main span,
+:root.dark-theme .person-main small,
+:root.dark-theme .employee p,
+:root.dark-theme .tramitador small,
+:root.dark-theme .profile-empty {
+  color: #aebbd0;
+}
+
+:root.dark-theme input,
+:root.dark-theme select,
+:root.dark-theme textarea {
+  border-color: #33435d;
+  background: #101827;
+  color: #f8fbff;
+}
+
+:root.dark-theme input:focus,
+:root.dark-theme select:focus,
+:root.dark-theme textarea:focus {
+  border-color: #4ed39a;
+  outline-color: rgba(78, 211, 154, 0.22);
+}
+
+:root.dark-theme input::placeholder,
+:root.dark-theme textarea::placeholder {
+  color: #7f8ba0;
+}
+
+:root.dark-theme .secondary,
+:root.dark-theme .profile-actions button,
+:root.dark-theme .profile-buttons .secondary-action {
+  background: #24324b;
+  color: #e8eef8;
+}
+
+:root.dark-theme .language-switch button,
+:root.dark-theme .theme-toggle {
+  color: #dbe6f4;
+}
+
+:root.dark-theme .language-switch button.active,
+:root.dark-theme .language-switch button:hover,
+:root.dark-theme .theme-toggle:hover {
+  background: #22483d;
+  color: #dff8ed;
+}
+
+:root.dark-theme a.active {
+  background: #e8eef8;
+  color: #101827;
+}
+
+:root.dark-theme .summary-pill,
+:root.dark-theme .pill.admin,
+:root.dark-theme .status-aprobado {
+  background: #173b2d;
+  color: #7ee0ad;
+}
+
+:root.dark-theme .pill,
+:root.dark-theme .period span,
+:root.dark-theme .status-pendiente {
+  background: #2a2a18;
+  color: #f4c96a;
+}
+
+:root.dark-theme .status-rechazado {
+  background: #3a1f23;
+  color: #ff9b91;
 }

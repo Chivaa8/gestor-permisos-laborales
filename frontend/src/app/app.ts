@@ -46,9 +46,12 @@ export class AppComponent {
   profileForm = emptyProfile();
   passwordForm = emptyPasswordForm();
   isPublicPage = false;
+  isDarkMode = localStorage.getItem("travelconnect_theme") === "dark";
   private loadedProfileId = "";
 
   constructor() {
+    this.applyTheme();
+
     effect(() => {
       const currentUser = this.auth.currentUser();
       if (!currentUser) {
@@ -176,6 +179,12 @@ export class AppComponent {
     return this.language.t(key);
   }
 
+  toggleTheme(): void {
+    this.isDarkMode = !this.isDarkMode;
+    localStorage.setItem("travelconnect_theme", this.isDarkMode ? "dark" : "light");
+    this.applyTheme();
+  }
+
   logout(): void {
     this.auth.logout();
   }
@@ -196,5 +205,9 @@ export class AppComponent {
 
   private updatePublicPage(url: string): void {
     this.isPublicPage = url.startsWith("/login") || url.startsWith("/reset-password");
+  }
+
+  private applyTheme(): void {
+    document.documentElement.classList.toggle("dark-theme", this.isDarkMode);
   }
 }

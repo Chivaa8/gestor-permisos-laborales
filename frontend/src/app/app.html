@@ -1,4 +1,4 @@
-<div class="shell" [class.public-shell]="!showPrivateLayout()">
+<div class="shell" [class.public-shell]="!showPrivateLayout()" [class.dark-shell]="isDarkMode">
   <aside class="sidebar" *ngIf="showPrivateLayout()">
     <div class="brand">
       <span class="brand-mark">
@@ -33,7 +33,12 @@
 
   <section class="main-area">
     <header class="topbar" *ngIf="auth.isLoggedIn()">
-      <div class="topbar-spacer"></div>
+      <div class="topbar-spacer">
+        <button class="theme-toggle" type="button" (click)="toggleTheme()" [attr.aria-label]="isDarkMode ? t('lightMode') : t('darkMode')">
+          <span class="theme-icon" aria-hidden="true">{{ isDarkMode ? "☀" : "☾" }}</span>
+          <span>{{ isDarkMode ? t("lightMode") : t("darkMode") }}</span>
+        </button>
+      </div>
 
       <div class="language-switch" aria-label="Elegir idioma">
         <button type="button" [class.active]="language.current() === 'es'" (click)="selectLanguage('es')">

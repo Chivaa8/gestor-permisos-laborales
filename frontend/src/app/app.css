@@ -228,6 +228,33 @@ a.active .nav-icon {
   min-width: 0;
 }
 
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #d7e1ef;
+  border-radius: 999px;
+  padding: 9px 13px;
+  background: #fff;
+  color: #24324b;
+  font-weight: 800;
+  box-shadow: 0 10px 24px rgba(23, 32, 51, 0.08);
+}
+
+.theme-toggle:hover {
+  background: #e8f7ef;
+  color: #143c32;
+}
+
+.theme-icon {
+  width: 18px;
+  color: inherit;
+  font-size: 1rem;
+  line-height: 1;
+  text-align: center;
+  text-transform: none;
+}
+
 .profile-area {
   justify-self: end;
   display: flex;
