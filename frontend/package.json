@@ -4,7 +4,8 @@
   "scripts": {
     "start": "ng serve --host 0.0.0.0 --port 4200",
     "build": "ng build",
-    "test": "vitest run"
+    "test": "vitest run src",
+    "e2e": "playwright test"
   },
   "private": true,
   "dependencies": {
@@ -23,6 +24,7 @@
     "@angular/build": "^20.3.13",
     "@angular/cli": "^20.3.13",
     "@angular/compiler-cli": "^20.3.15",
+    "@playwright/test": "^1.60.0",
     "typescript": "~5.9.3",
     "vitest": "^3.2.4"
   }

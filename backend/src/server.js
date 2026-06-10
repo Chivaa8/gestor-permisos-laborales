@@ -7,6 +7,8 @@ import empleadosRoutes from "./routes/empleados.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import tiposPermisoRoutes from "./routes/tiposPermiso.routes.js";
 import TipoPermiso from "./models/tipoPermiso.model.js";
+import Empleado from "./models/employee.model.js";
+import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger.js";
@@ -41,6 +43,30 @@ async function seedTiposPermiso() {
   );
 }
 
+async function seedAdminInicial() {
+  const username = process.env.ADMIN_USERNAME || "admin2";
+  const existeAdmin = await Empleado.findOne({ username });
+
+  if (existeAdmin) {
+    return;
+  }
+
+  const saltRounds = Number(process.env.BCRYPT_ROUNDS) || 10;
+  const password = process.env.ADMIN_PASSWORD || "Admin12345";
+  const passwordHasheada = await bcrypt.hash(password, saltRounds);
+
+  await Empleado.create({
+    nombre: process.env.ADMIN_NOMBRE || "Admin",
+    apellido: process.env.ADMIN_APELLIDO || "Demo",
+    email: process.env.ADMIN_EMAIL || "admin2@demo.local",
+    username,
+    password: passwordHasheada,
+    rol: "admin",
+    sueldo: 2200,
+    contratoHasta: new Date("2027-12-31"),
+  });
+}
+
 async function connectDB() {
   if (mongoose.connection.readyState === 1) {
     return mongoose.connection;
@@ -53,6 +79,7 @@ async function startServer() {
   try {
     await connectDB();
     await seedTiposPermiso();
+    await seedAdminInicial();
     console.log("Conectado correctamente a MongoDB");
 
     const PORT = process.env.PORT || 3000;
@@ -69,4 +96,4 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   startServer();
 }
 
-export { app, connectDB, seedTiposPermiso, startServer };
+export { app, connectDB, seedAdminInicial, seedTiposPermiso, startServer };
