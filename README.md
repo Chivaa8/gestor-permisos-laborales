@@ -1,4 +1,4 @@
-# TravelConnect - Gestor de permisos laborales
+# Gestor de permisos laborales de TravelConnect
 
 Aplicación web para gestionar permisos laborales de empleados. El proyecto esta dividido en frontend Angular, backend Node.js/Express y base de datos MongoDB. Incluye autenticación con JWT, roles de usuario, gestion de empleados, gestion de permisos, dashboard con graficos, recuperación de contrasena por email, documentacion Swagger y dockerizacion completa.
 
