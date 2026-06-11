@@ -209,13 +209,18 @@ class empleadosController {
         return res.status(400).json({ error: "ID no válido" });
       }
 
-      const data = await Empleado.findByIdAndDelete(id);
+      const data = await Empleado.findById(id);
 
       if (!data) {
         return res.status(404).json({ error: "Empleado no encontrado" });
       }
 
       const permisosEliminados = await Permiso.deleteMany({ empId: id });
+      await Permiso.updateMany(
+        { empTramitador: id },
+        { $unset: { empTramitador: "", fechaTramitacion: "" } },
+      );
+      await data.deleteOne();
 
       res.status(200).json({
         message: "Empleado despedido",

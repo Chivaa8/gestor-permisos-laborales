@@ -1,4 +1,15 @@
 <div class="shell" [class.public-shell]="!showPrivateLayout()" [class.dark-shell]="isDarkMode">
+  <button
+    *ngIf="!auth.isLoggedIn()"
+    class="theme-toggle public-theme-toggle"
+    type="button"
+    (click)="toggleTheme()"
+    [attr.aria-label]="isDarkMode ? t('lightMode') : t('darkMode')"
+  >
+    <span class="theme-icon" aria-hidden="true">{{ isDarkMode ? "☀" : "☾" }}</span>
+    <span>{{ isDarkMode ? t("lightMode") : t("darkMode") }}</span>
+  </button>
+
   <aside class="sidebar" *ngIf="showPrivateLayout()">
     <div class="brand">
       <span class="brand-mark">
@@ -10,7 +21,7 @@
       </div>
     </div>
 
-    <nav aria-label="Navegacion principal">
+    <nav aria-label="Navegación principal">
       <a routerLink="/dashboard" routerLinkActive="active">
         <span class="nav-icon chart-icon" aria-hidden="true"></span>
         <span>{{ t("dashboard") }}</span>

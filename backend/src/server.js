@@ -56,9 +56,9 @@ async function seedAdminInicial() {
   const passwordHasheada = await bcrypt.hash(password, saltRounds);
 
   await Empleado.create({
-    nombre: process.env.ADMIN_NOMBRE || "Admin",
-    apellido: process.env.ADMIN_APELLIDO || "Demo",
-    email: process.env.ADMIN_EMAIL || "admin2@demo.local",
+    nombre: process.env.ADMIN_NOMBRE || "Oriol",
+    apellido: process.env.ADMIN_APELLIDO || "Chiva",
+    email: process.env.ADMIN_EMAIL || "oriolchiva8@gmail.com",
     username,
     password: passwordHasheada,
     rol: "admin",

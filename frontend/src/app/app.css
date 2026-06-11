@@ -246,6 +246,13 @@ a.active .nav-icon {
   color: #143c32;
 }
 
+.public-theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  z-index: 20;
+}
+
 .theme-icon {
   width: 18px;
   color: inherit;

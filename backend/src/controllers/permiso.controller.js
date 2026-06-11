@@ -141,6 +141,7 @@ class permisoController {
       }
 
       const permisos = await Permiso.find({ empId: id })
+        .populate("empId")
         .populate("tipo")
         .populate("empTramitador");
 

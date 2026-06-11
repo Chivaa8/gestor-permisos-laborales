@@ -4,7 +4,7 @@ Aplicación web para gestionar permisos laborales de empleados. El proyecto esta
 
 ## Tecnologias
 
-- Frontend: Angular 20, TypeScript, CSS responsive, Vitest.
+- Frontend: Angular 20, TypeScript, CSS responsive, Vitest y Playwright.
 - Backend: Node.js, Express, MongoDB, Mongoose, JWT, bcryptjs, Nodemailer.
 - Documentacion API: Swagger/OpenAPI.
 - Base de datos: MongoDB.
@@ -57,6 +57,7 @@ Aplicación web para gestionar permisos laborales de empleados. El proyecto esta
 
 - Marca TravelConnect con logo propio.
 - Selector de idioma: castellano, catalan e ingles.
+- Selector de modo dia y modo noche (el modo noche necesita todavia bastantes mejoras visuales en algunas secciones).
 - Dashboard visual con graficos.
 - Panel de perfil desplegable.
 - Vista diferenciada para usuarios `admin` y `basic`.
@@ -303,6 +304,39 @@ npm test
 cd frontend
 npm test
 ```
+
+### Pruebas E2E con Playwright
+
+La prueba E2E automatiza un flujo completo desde la interfaz: registra a `Oriol Tester`, inicia sesion, comprueba la proteccion de rutas y crea un permiso. Al terminar, elimina automaticamente el usuario y sus datos de prueba.
+
+Antes de ejecutarla, los tres servicios de Docker deben estar funcionando:
+
+```bash
+docker compose up -d
+```
+
+Ejecucion normal en segundo plano:
+
+```bash
+cd frontend
+npm run e2e
+```
+
+Ejecucion mostrando el navegador:
+
+```bash
+cd frontend
+npx playwright test --headed
+```
+
+Modo interactivo de Playwright, recomendado para una demostracion:
+
+```bash
+cd frontend
+npx playwright test --ui
+```
+
+La prueba se encuentra en `frontend/e2e/login-create-permit.spec.ts`.
 
 ### Build frontend
 

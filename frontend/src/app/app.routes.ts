@@ -14,6 +14,6 @@ export const routes: Routes = [
   { path: "dashboard", component: DashboardComponent, canActivate: [authGuard] },
   { path: "empleados", component: EmpleadosComponent, canActivate: [authGuard, adminGuard] },
   { path: "permisos", component: PermisosComponent, canActivate: [authGuard] },
-  { path: "", pathMatch: "full", redirectTo: "dashboard" },
-  { path: "**", redirectTo: "dashboard" },
+  { path: "", pathMatch: "full", redirectTo: "login" },
+  { path: "**", redirectTo: "login" },
 ];

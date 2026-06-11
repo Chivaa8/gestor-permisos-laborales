@@ -20,12 +20,14 @@ export class AuthService {
   private readonly userSignal = signal<CurrentUser | null>(this.decodeToken(this.getToken()));
   readonly currentUser = computed(() => this.userSignal());
 
-  constructor(private readonly http: HttpClient, private readonly router: Router) {}
+  constructor(private readonly http: HttpClient, private readonly router: Router) {
+    localStorage.removeItem(TOKEN_KEY);
+  }
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, credentials).pipe(
       tap((response) => {
-        localStorage.setItem(TOKEN_KEY, response.token);
+        sessionStorage.setItem(TOKEN_KEY, response.token);
         this.userSignal.set(this.decodeToken(response.token));
       }),
     );
@@ -44,13 +46,13 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(TOKEN_KEY);
     this.userSignal.set(null);
     this.router.navigateByUrl("/login");
   }
 
   getToken(): string | null {
-    return localStorage.getItem(TOKEN_KEY);
+    return sessionStorage.getItem(TOKEN_KEY);
   }
 
   isLoggedIn(): boolean {

@@ -1,17 +1,48 @@
 import { expect, test } from "@playwright/test";
 
+let createdUsername = "";
+
+test.afterEach(async ({ request }) => {
+  if (!createdUsername) return;
+
+  const loginResponse = await request.post("http://127.0.0.1:3001/api/auth/login", {
+    data: {
+      username: process.env.E2E_ADMIN_USERNAME || "admin2",
+      password: process.env.E2E_ADMIN_PASSWORD || "Admin12345",
+    },
+  });
+
+  if (!loginResponse.ok()) return;
+
+  const { token } = await loginResponse.json();
+  const headers = { Authorization: `Bearer ${token}` };
+  const employeesResponse = await request.get("http://127.0.0.1:3001/api/empleados", { headers });
+
+  if (!employeesResponse.ok()) return;
+
+  const employees = await employeesResponse.json();
+  const employee = employees.find((item: { username: string }) => item.username === createdUsername);
+
+  if (employee?._id) {
+    await request.delete(`http://127.0.0.1:3001/api/empleados/${employee._id}`, { headers });
+  }
+
+  createdUsername = "";
+});
+
 test("el usuario se registra, inicia sesion y crea un permiso", async ({ page }) => {
   const id = Date.now();
-  const username = `e2e_${id}`;
+  const username = `oriolTester_${id}`;
   const password = "Password123";
+  createdUsername = username;
 
   await page.goto("/");
   await page.getByRole("button", { name: "Crear usuario" }).click();
 
-  await page.locator('input[name="nombre"]').fill("E2E");
+  await page.locator('input[name="nombre"]').fill("Oriol");
   await page.locator('input[name="apellido"]').fill("Tester");
-  await page.locator('input[name="segundoApellido"]').fill("Playwright");
-  await page.locator('input[name="email"]').fill(`${username}@demo.local`);
+  await page.locator('input[name="segundoApellido"]').fill("Chiva");
+  await page.locator('input[name="email"]').fill(`${username}@travelconnect.local`);
   await page.locator('input[name="registerUsername"]').fill(username);
   await page.locator('input[name="registerPassword"]').fill(password);
   await page.locator('input[name="confirmPassword"]').fill(password);
