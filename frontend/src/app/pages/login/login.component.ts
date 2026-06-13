@@ -14,6 +14,7 @@ import { LanguageService } from "../../services/language/language.service";
   styleUrl: "./login.component.css",
 })
 export class LoginComponent {
+  private readonly emailRegex = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
   mode: "login" | "register" | "forgot" = "login";
   username = "";
   password = "";
@@ -61,6 +62,11 @@ export class LoginComponent {
       return;
     }
 
+    if (!this.isValidEmail(this.email)) {
+      this.error = "Introduce un correo electrónico válido, por ejemplo nombre@dominio.com";
+      return;
+    }
+
     this.loading = true;
     this.auth
       .register({
@@ -96,6 +102,12 @@ export class LoginComponent {
     this.error = "";
     this.info = "";
     this.resetUrl = "";
+
+    if (!this.isValidEmail(this.recoveryEmail)) {
+      this.error = "Introduce un correo electrónico válido, por ejemplo nombre@dominio.com";
+      return;
+    }
+
     this.loading = true;
 
     this.auth.forgotPassword(this.recoveryEmail).subscribe({
@@ -126,5 +138,9 @@ export class LoginComponent {
     }
 
     return fallback;
+  }
+
+  isValidEmail(value: string): boolean {
+    return this.emailRegex.test(value.trim());
   }
 }

@@ -140,3 +140,7 @@ vite.config.ts.timestamp-*
 
 # Angular local cache
 .angular/
+
+# Playwright generated reports
+test-results/
+playwright-report/

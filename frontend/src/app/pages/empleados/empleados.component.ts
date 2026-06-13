@@ -4,6 +4,7 @@ import { NgFor, NgIf } from "@angular/common";
 import { Empleado, EmpleadoForm } from "../../models/api.models";
 import { EmpleadosService } from "../../services/empleados/empleados.service";
 import { LanguageService } from "../../services/language/language.service";
+import { normalizePhotoUrl } from "../../models/photo-url";
 
 const emptyForm = (): EmpleadoForm => ({
   nombre: "",
@@ -26,12 +27,14 @@ const emptyForm = (): EmpleadoForm => ({
   styleUrl: "./empleados.component.css",
 })
 export class EmpleadosComponent implements OnInit {
+  private readonly emailRegex = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
   empleados: Empleado[] = [];
   form = emptyForm();
   editingId = "";
   error = "";
   success = "";
   salaryAmount: Record<string, number> = {};
+  failedPhotos = new Set<string>();
 
   constructor(
     private readonly empleadosService: EmpleadosService,
@@ -71,6 +74,13 @@ export class EmpleadosComponent implements OnInit {
     this.error = "";
     this.success = "";
 
+    if (!this.emailRegex.test(this.form.email.trim())) {
+      this.error = "Introduce un correo electrónico válido, por ejemplo nombre@dominio.com";
+      return;
+    }
+
+    this.form.foto = normalizePhotoUrl(this.form.foto);
+
     const request = this.editingId
       ? this.empleadosService.update(this.editingId, this.form)
       : this.empleadosService.create(this.form);
@@ -102,6 +112,14 @@ export class EmpleadosComponent implements OnInit {
 
   formatContractDate(fecha?: string): string {
     return fecha ? new Intl.DateTimeFormat("es-ES").format(new Date(fecha)) : "Sin fecha";
+  }
+
+  photoFailed(id: string): boolean {
+    return this.failedPhotos.has(id);
+  }
+
+  markPhotoFailed(id: string): void {
+    this.failedPhotos.add(id);
   }
 
   adjustSalary(id: string, direction: "up" | "down"): void {

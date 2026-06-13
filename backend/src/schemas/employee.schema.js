@@ -16,6 +16,9 @@ const employeeSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
+        trim: true,
+        lowercase: true,
+        match: [/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/, "El correo electrónico no es válido"],
     },
     username: {
         type: String,

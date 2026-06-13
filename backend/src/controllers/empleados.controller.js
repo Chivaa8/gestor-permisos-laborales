@@ -2,17 +2,25 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import Empleado from "../models/employee.model.js";
 import Permiso from "../schemas/permiso.schema.js";
+import { isValidEmail, normalizeEmail, normalizePhotoUrl } from "../utils/validation.js";
 
 class empleadosController {
   async create(req, res) {
     try {
       const { password, ...resto } = req.body;
 
+      const normalizedEmail = normalizeEmail(resto.email);
+      resto.foto = normalizePhotoUrl(resto.foto);
+      if (!isValidEmail(normalizedEmail)) {
+        return res.status(400).json({ error: "El correo electrónico no es válido" });
+      }
+
       const saltRounds = Number(process.env.BCRYPT_ROUNDS) || 10;
       const passwordHasheada = await bcrypt.hash(password, saltRounds);
 
       const data = await Empleado.create({
         ...resto,
+        email: normalizedEmail,
         password: passwordHasheada,
       });
 
@@ -67,6 +75,17 @@ class empleadosController {
 
       const { password, ...datosActualizables } = req.body;
       const esPerfilPropio = req.user.id === id;
+
+      if (Object.hasOwn(datosActualizables, "email")) {
+        datosActualizables.email = normalizeEmail(datosActualizables.email);
+        if (!isValidEmail(datosActualizables.email)) {
+          return res.status(400).json({ error: "El correo electrónico no es válido" });
+        }
+      }
+
+      if (Object.hasOwn(datosActualizables, "foto")) {
+        datosActualizables.foto = normalizePhotoUrl(datosActualizables.foto);
+      }
 
       if (req.user.rol !== "admin" && !esPerfilPropio) {
         return res.status(403).json({ error: "No autorizado" });

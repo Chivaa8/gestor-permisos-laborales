@@ -1,4 +1,4 @@
-import { Component, effect, inject } from "@angular/core";
+import { Component, HostListener, effect, inject } from "@angular/core";
 import { HttpErrorResponse } from "@angular/common/http";
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 import { NgIf } from "@angular/common";
@@ -8,6 +8,7 @@ import { Empleado, EmpleadoForm, PasswordUpdateRequest } from "./models/api.mode
 import { EmpleadosService } from "./services/empleados/empleados.service";
 import { AppLanguage, LanguageService } from "./services/language/language.service";
 import { filter } from "rxjs";
+import { normalizePhotoUrl } from "./models/photo-url";
 
 const emptyProfile = (): EmpleadoForm => ({
   nombre: "",
@@ -47,6 +48,8 @@ export class AppComponent {
   passwordForm = emptyPasswordForm();
   isPublicPage = false;
   isDarkMode = localStorage.getItem("travelconnect_theme") === "dark";
+  profilePhotoFailed = false;
+  photoPreviewFailed = false;
   private loadedProfileId = "";
 
   constructor() {
@@ -70,7 +73,20 @@ export class AppComponent {
     this.updatePublicPage(this.router.url);
     this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((event) => {
       this.updatePublicPage(event.urlAfterRedirects);
+      this.closeProfile();
     });
+  }
+
+  @HostListener("document:click", ["$event"])
+  closeProfileOnOutsideClick(event: MouseEvent): void {
+    if (!this.profileOpen || !(event.target instanceof Element)) {
+      return;
+    }
+
+    const clickedInsideProfile = event.target.closest(".profile-area, .profile-menu");
+    if (!clickedInsideProfile) {
+      this.closeProfile();
+    }
   }
 
   initials(): string {
@@ -82,7 +98,13 @@ export class AppComponent {
   }
 
   toggleProfile(): void {
-    this.profileOpen = !this.profileOpen;
+    const shouldOpen = !this.profileOpen;
+    if (!shouldOpen) {
+      this.closeProfile();
+      return;
+    }
+
+    this.profileOpen = true;
     this.profileError = "";
     this.profileSuccess = "";
   }
@@ -98,6 +120,7 @@ export class AppComponent {
 
     this.profileAction = action;
     this.profileForm = { ...this.profile, password: "" };
+    this.photoPreviewFailed = false;
     this.passwordForm = emptyPasswordForm();
     this.profileError = "";
     this.profileSuccess = "";
@@ -111,6 +134,16 @@ export class AppComponent {
     this.profileSuccess = "";
   }
 
+  private closeProfile(): void {
+    this.profileOpen = false;
+    this.profileAction = "";
+    this.profileForm = emptyProfile();
+    this.passwordForm = emptyPasswordForm();
+    this.profileError = "";
+    this.profileSuccess = "";
+    this.photoPreviewFailed = false;
+  }
+
   saveProfile(): void {
     const id = this.auth.currentUser()?.id;
     if (!id) {
@@ -120,9 +153,18 @@ export class AppComponent {
     this.profileError = "";
     this.profileSuccess = "";
 
+    if (this.profileAction === "photo") {
+      this.profileForm.foto = normalizePhotoUrl(this.profileForm.foto);
+      if (this.profileForm.foto && this.photoPreviewFailed) {
+        this.profileError = "La URL no contiene una imagen accesible. Usa el enlace directo de la imagen.";
+        return;
+      }
+    }
+
     this.empleadosService.update(id, this.profileForm).subscribe({
       next: (empleado) => {
         this.profile = empleado;
+        this.profilePhotoFailed = false;
         this.profileForm = { ...empleado, password: "" };
         this.profileSuccess = this.t("profileUpdated");
         this.profileAction = "";
@@ -179,6 +221,19 @@ export class AppComponent {
     return this.language.t(key);
   }
 
+  updatePhotoPreview(): void {
+    this.profileForm.foto = normalizePhotoUrl(this.profileForm.foto);
+    this.photoPreviewFailed = false;
+  }
+
+  markProfilePhotoFailed(): void {
+    this.profilePhotoFailed = true;
+  }
+
+  markPhotoPreviewFailed(): void {
+    this.photoPreviewFailed = true;
+  }
+
   toggleTheme(): void {
     this.isDarkMode = !this.isDarkMode;
     localStorage.setItem("travelconnect_theme", this.isDarkMode ? "dark" : "light");
@@ -197,6 +252,7 @@ export class AppComponent {
     this.empleadosService.getOne(id).subscribe({
       next: (empleado) => {
         this.profile = empleado;
+        this.profilePhotoFailed = false;
         this.profileForm = { ...empleado, password: "" };
       },
       error: () => (this.profileError = this.t("profileLoadError")),

@@ -20,10 +20,10 @@
       <label>{{ t("firstSurname") }}<input name="apellido" [(ngModel)]="form.apellido" required></label>
     </div>
     <label>{{ t("secondSurname") }}<input name="segundoApellido" [(ngModel)]="form.segundoApellido"></label>
-    <label>{{ t("email") }}<input name="email" [(ngModel)]="form.email" required></label>
+    <label>{{ t("email") }}<input name="email" type="email" [(ngModel)]="form.email" required></label>
     <label>{{ t("user") }}<input name="username" [(ngModel)]="form.username" required></label>
     <label *ngIf="!editingId">{{ t("password") }}<input name="password" type="password" [(ngModel)]="form.password" required></label>
-    <label>{{ t("photoUrl") }}<input name="foto" [(ngModel)]="form.foto"></label>
+    <label>{{ t("photoUrl") }}<input name="foto" type="url" [(ngModel)]="form.foto" placeholder="https://sitio.com/foto.jpg"></label>
     <div class="two-cols">
       <label>{{ t("salary") }}<input name="sueldo" type="number" min="0" step="50" [(ngModel)]="form.sueldo"></label>
       <label>{{ t("contractUntil") }}<input name="contratoHasta" type="date" [(ngModel)]="form.contratoHasta"></label>
@@ -54,7 +54,7 @@
     <div class="people-grid">
       <article class="employee-card" *ngFor="let empleado of empleados">
         <div class="avatar">
-          <img *ngIf="empleado.foto; else initials" [src]="empleado.foto" [alt]="empleado.nombre + ' ' + empleado.apellido">
+          <img *ngIf="empleado.foto && !photoFailed(empleado._id); else initials" [src]="empleado.foto" [alt]="empleado.nombre + ' ' + empleado.apellido" (error)="markPhotoFailed(empleado._id)">
           <ng-template #initials>{{ empleado.nombre.charAt(0) }}{{ empleado.apellido.charAt(0) }}</ng-template>
         </div>
         <div class="person-main">

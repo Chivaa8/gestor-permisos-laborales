@@ -42,7 +42,7 @@
 
       <label>
         {{ t("email") }}
-        <input name="email" [(ngModel)]="email" autocomplete="email" required>
+        <input name="email" type="email" [(ngModel)]="email" autocomplete="email" required>
       </label>
 
       <label>
@@ -62,7 +62,7 @@
         </label>
       </div>
 
-      <button type="submit" [disabled]="loading || !nombre || !apellido || !email || !username || !password || !confirmPassword">
+      <button type="submit" [disabled]="loading || !nombre || !apellido || !isValidEmail(email) || !username || !password || !confirmPassword">
         {{ loading ? t("creating") : t("createUser") }}
       </button>
     </form>
@@ -73,7 +73,7 @@
         <input name="recoveryEmail" type="email" [(ngModel)]="recoveryEmail" autocomplete="email" required>
       </label>
 
-      <button type="submit" [disabled]="loading || !recoveryEmail">
+      <button type="submit" [disabled]="loading || !isValidEmail(recoveryEmail)">
         {{ loading ? "Enviando..." : "Enviar enlace" }}
       </button>
     </form>

@@ -80,7 +80,7 @@
       <section class="profile-menu" *ngIf="profileOpen">
         <div class="profile-head">
           <div class="profile-photo">
-            <img *ngIf="profile?.foto; else menuInitials" [src]="profile?.foto" [alt]="profile?.nombre || 'Mi perfil'">
+            <img *ngIf="profile?.foto && !profilePhotoFailed; else menuInitials" [src]="profile?.foto" [alt]="profile?.nombre || 'Mi perfil'" (error)="markProfilePhotoFailed()">
             <ng-template #menuInitials>{{ initials() }}</ng-template>
           </div>
           <div>
@@ -124,10 +124,11 @@
 
         <form class="profile-form" *ngIf="profileAction === 'photo'" (ngSubmit)="saveProfile()">
           <div class="photo-preview">
-            <img *ngIf="profileForm.foto; else photoPreviewInitials" [src]="profileForm.foto" [alt]="profileForm.nombre || 'Nueva foto'">
+            <img *ngIf="profileForm.foto && !photoPreviewFailed; else photoPreviewInitials" [src]="profileForm.foto" [alt]="profileForm.nombre || 'Nueva foto'" (error)="markPhotoPreviewFailed()">
             <ng-template #photoPreviewInitials>{{ initials() }}</ng-template>
           </div>
-          <label>{{ t("photoUrl") }}<input name="profileFoto" [(ngModel)]="profileForm.foto"></label>
+          <label>{{ t("photoUrl") }}<input name="profileFoto" type="url" [(ngModel)]="profileForm.foto" (change)="updatePhotoPreview()" placeholder="https://sitio.com/foto.jpg"></label>
+          <p class="photo-error" *ngIf="photoPreviewFailed">La URL no es una imagen directa o el sitio bloquea su visualización.</p>
 
           <div class="profile-buttons">
             <button type="submit">{{ t("savePhoto") }}</button>

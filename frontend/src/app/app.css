@@ -380,6 +380,7 @@ a.active .nav-icon {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 20%;
 }
 
 .profile-menu {
@@ -483,6 +484,14 @@ a.active .nav-icon {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 20%;
+}
+
+.photo-error {
+  margin: 0;
+  color: #b42318;
+  font-size: 0.86rem;
+  font-weight: 700;
 }
 
 .two-cols {

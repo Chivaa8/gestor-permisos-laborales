@@ -3,6 +3,7 @@ import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
 import Empleado from "../models/employee.model.js";
 import { sendPasswordResetEmail } from "../services/mail.service.js";
+import { isValidEmail, normalizeEmail, normalizePhotoUrl } from "../utils/validation.js";
 
 class authController {
   async register(req, res) {
@@ -13,7 +14,13 @@ class authController {
         return res.status(400).json({ error: "Faltan campos obligatorios" });
       }
 
-      const existente = await Empleado.findOne({ $or: [{ email }, { username }] });
+      const normalizedEmail = normalizeEmail(email);
+
+      if (!isValidEmail(normalizedEmail)) {
+        return res.status(400).json({ error: "El correo electrónico no es válido" });
+      }
+
+      const existente = await Empleado.findOne({ $or: [{ email: normalizedEmail }, { username }] });
 
       if (existente) {
         return res.status(400).json({ error: "Email o usuario ya registrado" });
@@ -26,10 +33,10 @@ class authController {
         nombre,
         apellido,
         segundoApellido,
-        email,
+        email: normalizedEmail,
         username,
         password: passwordHasheada,
-        foto,
+        foto: normalizePhotoUrl(foto),
         rol: "basic",
       });
 
@@ -83,7 +90,13 @@ class authController {
         return res.status(400).json({ error: "Debes indicar el email" });
       }
 
-      const empleado = await Empleado.findOne({ email }).select("+resetPasswordToken +resetPasswordExpires");
+      const normalizedEmail = normalizeEmail(email);
+
+      if (!isValidEmail(normalizedEmail)) {
+        return res.status(400).json({ error: "El correo electrónico no es válido" });
+      }
+
+      const empleado = await Empleado.findOne({ email: normalizedEmail }).select("+resetPasswordToken +resetPasswordExpires");
 
       // Respuesta generica para no revelar si un email existe o no.
       if (!empleado) {
