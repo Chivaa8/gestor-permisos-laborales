@@ -163,6 +163,32 @@ small {
   padding: 32px;
 }
 
+.basic-dashboard {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.basic-welcome {
+  grid-column: 1 / -1;
+}
+
+.basic-dashboard .hero-panel {
+  grid-column: span 2;
+}
+
+.basic-dashboard .chart-panel {
+  grid-column: span 1;
+}
+
+.basic-pie {
+  width: min(230px, 100%);
+}
+
+.basic-comparison {
+  grid-column: 1 / -1;
+}
+
 .wide-card {
   display: grid;
   gap: 16px;
@@ -293,5 +319,16 @@ small {
 
   .hero-panel {
     flex-direction: column;
+  }
+
+  .basic-dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .basic-dashboard .hero-panel,
+  .basic-dashboard .chart-panel,
+  .basic-welcome,
+  .basic-comparison {
+    grid-column: 1;
   }
 }

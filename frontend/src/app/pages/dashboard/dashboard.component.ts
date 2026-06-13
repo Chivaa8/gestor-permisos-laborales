@@ -39,6 +39,24 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.auth.isAdmin()) {
+      const userId = this.auth.currentUser()?.id;
+      if (!userId) {
+        return;
+      }
+
+      this.permisosService.getMine(userId).subscribe({
+        next: (data) => {
+          this.permisos = data;
+          this.estados = data.reduce<DashboardEstados>(
+            (counts, permiso) => {
+              counts[permiso.estado] += 1;
+              return counts;
+            },
+            { pendiente: 0, aprobado: 0, rechazado: 0 },
+          );
+        },
+        error: () => (this.error = "No se han podido cargar tus permisos"),
+      });
       return;
     }
 

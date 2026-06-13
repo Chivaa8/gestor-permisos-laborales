@@ -104,9 +104,65 @@
 </section>
 
 <ng-template #basicHome>
-  <section class="welcome-panel">
-    <span class="eyebrow">{{ t("welcome") }}</span>
-    <h2>{{ t("basicWelcomeTitle") }}</h2>
-    <p>{{ t("basicWelcomeText") }}</p>
+  <section class="basic-dashboard">
+    <article class="welcome-panel basic-welcome">
+      <span class="eyebrow">{{ t("welcome") }}</span>
+      <h2>{{ t("basicWelcomeTitle") }}</h2>
+      <p>{{ t("basicWelcomeText") }}</p>
+    </article>
+
+    <article class="hero-panel">
+      <div>
+        <span class="eyebrow">{{ t("totalRequests") }}</span>
+        <strong>{{ total() }}</strong>
+        <p>{{ t("registeredPermits") }}</p>
+      </div>
+      <div class="mini-metrics">
+        <span *ngFor="let estado of orden">
+          <i [style.background]="colors[estado]"></i>
+          {{ label(estado) }} {{ estados[estado] }}
+        </span>
+      </div>
+    </article>
+
+    <article class="chart-panel">
+      <p class="error" *ngIf="error">{{ error }}</p>
+      <div class="pie-wrap basic-pie">
+        <div class="pie" [style.background]="pieChart()">
+          <div class="pie-hole">
+            <strong>{{ total() }}</strong>
+            <span>{{ t("total") }}</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article *ngFor="let estado of orden" class="stat-card">
+      <div class="stat-top">
+        <span class="dot" [style.background]="colors[estado]"></span>
+        <span>{{ label(estado) }}</span>
+      </div>
+      <strong>{{ estados[estado] }}</strong>
+      <div class="bar">
+        <i [style.width.%]="percentage(estado)" [style.background]="colors[estado]"></i>
+      </div>
+      <small>{{ percentage(estado) }}% {{ t("total") }}</small>
+    </article>
+
+    <article class="wide-card bars-card basic-comparison">
+      <div class="panel-title">
+        <span>{{ t("statuses") }}</span>
+        <h2>{{ t("quickComparison") }}</h2>
+      </div>
+      <div class="vertical-bars">
+        <div *ngFor="let estado of orden">
+          <span class="vbar">
+            <i [style.height.%]="barHeight(estado)" [style.background]="colors[estado]"></i>
+          </span>
+          <strong>{{ estados[estado] }}</strong>
+          <small>{{ label(estado) }}</small>
+        </div>
+      </div>
+    </article>
   </section>
 </ng-template>

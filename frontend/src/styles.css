@@ -18,6 +18,7 @@
 body {
   margin: 0;
   min-width: 320px;
+  overflow-x: hidden;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(243, 246, 251, 0.92)),
     #f3f6fb;
@@ -73,10 +74,13 @@ button {
 }
 
 :root.dark-theme .page-logo {
-  background: transparent;
-  filter: invert(1) hue-rotate(180deg) contrast(1.08);
-  mix-blend-mode: screen;
-  opacity: 0.88;
+  border: 1px solid #3b4648;
+  border-radius: 6px;
+  background: #eef1ef;
+  filter: none;
+  mix-blend-mode: normal;
+  opacity: 0.9;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.24);
 }
 
 :root.dark-theme h1,
