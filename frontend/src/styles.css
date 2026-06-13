@@ -7,8 +7,8 @@
 
 :root.dark-theme {
   color-scheme: dark;
-  background: #0f1725;
-  color: #e8eef8;
+  background: #101416;
+  color: #edf3f0;
 }
 
 * {
@@ -24,9 +24,7 @@ body {
 }
 
 :root.dark-theme body {
-  background:
-    linear-gradient(180deg, rgba(15, 23, 37, 0.96), rgba(20, 30, 48, 0.94)),
-    #0f1725;
+  background: #101416;
 }
 
 button,
@@ -41,18 +39,21 @@ button {
 }
 
 :root.dark-theme .shell {
-  background: #0f1725;
-  color: #e8eef8;
+  background: #14191b;
+  color: #edf3f0;
 }
 
 :root.dark-theme .topbar {
-  background: rgba(15, 23, 37, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(20, 25, 27, 0.94);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
 }
 
 :root.dark-theme .sidebar {
   background:
-    linear-gradient(180deg, rgba(78, 211, 154, 0.1), transparent 36%),
-    linear-gradient(180deg, #0b1220 0%, #111c2f 100%);
+    linear-gradient(180deg, rgba(65, 190, 139, 0.13), transparent 38%),
+    linear-gradient(180deg, #101719 0%, #182326 100%);
+  box-shadow: 12px 0 34px rgba(0, 0, 0, 0.24);
 }
 
 :root.dark-theme .language-switch,
@@ -65,14 +66,17 @@ button {
 :root.dark-theme .employee-card,
 :root.dark-theme .permission-card,
 :root.dark-theme .empty-state {
-  border-color: #2b3a52;
-  background: #172033;
-  color: #e8eef8;
-  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+  border-color: #354044;
+  background: #202729;
+  color: #edf3f0;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22);
 }
 
 :root.dark-theme .page-logo {
-  filter: invert(1) contrast(1.05);
+  background: transparent;
+  filter: invert(1) hue-rotate(180deg) contrast(1.08);
+  mix-blend-mode: screen;
+  opacity: 0.88;
 }
 
 :root.dark-theme h1,
@@ -97,51 +101,51 @@ button {
 :root.dark-theme .employee p,
 :root.dark-theme .tramitador small,
 :root.dark-theme .profile-empty {
-  color: #aebbd0;
+  color: #aebbb6;
 }
 
 :root.dark-theme input,
 :root.dark-theme select,
 :root.dark-theme textarea {
-  border-color: #33435d;
-  background: #101827;
-  color: #f8fbff;
+  border-color: #465256;
+  background: #171d1f;
+  color: #f6faf8;
 }
 
 :root.dark-theme input:focus,
 :root.dark-theme select:focus,
 :root.dark-theme textarea:focus {
-  border-color: #4ed39a;
-  outline-color: rgba(78, 211, 154, 0.22);
+  border-color: #61d5a5;
+  outline-color: rgba(97, 213, 165, 0.18);
 }
 
 :root.dark-theme input::placeholder,
 :root.dark-theme textarea::placeholder {
-  color: #7f8ba0;
+  color: #7f8d88;
 }
 
 :root.dark-theme .secondary,
 :root.dark-theme .profile-actions button,
 :root.dark-theme .profile-buttons .secondary-action {
-  background: #24324b;
-  color: #e8eef8;
+  background: #303a3d;
+  color: #edf3f0;
 }
 
 :root.dark-theme .language-switch button,
 :root.dark-theme .theme-toggle {
-  color: #dbe6f4;
+  color: #d6dfdc !important;
 }
 
 :root.dark-theme .language-switch button.active,
 :root.dark-theme .language-switch button:hover,
 :root.dark-theme .theme-toggle:hover {
-  background: #22483d;
-  color: #dff8ed;
+  background: #27493e;
+  color: #e4f8ef;
 }
 
 :root.dark-theme a.active {
-  background: #e8eef8;
-  color: #101827;
+  background: #e8f2ee;
+  color: #17201d;
 }
 
 :root.dark-theme .summary-pill,
@@ -161,4 +165,176 @@ button {
 :root.dark-theme .status-rechazado {
   background: #3a1f23;
   color: #ff9b91;
+}
+
+/* Complete dark surfaces */
+:root.dark-theme .content {
+  background:
+    linear-gradient(180deg, rgba(62, 84, 77, 0.08), transparent 260px),
+    #14191b;
+}
+
+:root.dark-theme .page-header {
+  color: #edf3f0;
+}
+
+:root.dark-theme .eyebrow,
+:root.dark-theme .panel-title span {
+  color: #72d9b0;
+}
+
+:root.dark-theme .hero-panel,
+:root.dark-theme .chart-panel,
+:root.dark-theme .wide-card,
+:root.dark-theme .welcome-panel {
+  border-color: #354044;
+  background: #202729;
+  color: #edf3f0;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22);
+}
+
+:root.dark-theme .hero-panel {
+  background:
+    linear-gradient(135deg, rgba(69, 190, 141, 0.14), rgba(62, 119, 210, 0.1)),
+    #202729;
+}
+
+:root.dark-theme .pie-hole,
+:root.dark-theme .mini-donut strong {
+  background: #202729 !important;
+  color: #f6faf8 !important;
+  box-shadow: 0 9px 24px rgba(0, 0, 0, 0.3);
+}
+
+:root.dark-theme .bar,
+:root.dark-theme .vbar {
+  background: #323c3f;
+}
+
+:root.dark-theme .bar-label,
+:root.dark-theme .activity-list b {
+  color: #e8efec !important;
+}
+
+:root.dark-theme app-dashboard .activity-list span,
+:root.dark-theme app-dashboard .pie-hole span,
+:root.dark-theme app-dashboard .activity-list small {
+  color: #aebbb6 !important;
+}
+
+:root.dark-theme app-permisos .period span {
+  border: 1px solid #465256;
+  background: #30383a !important;
+  color: #f4c96a !important;
+}
+
+:root.dark-theme app-permisos .employee p,
+:root.dark-theme app-permisos .tramitador small,
+:root.dark-theme app-permisos .tramitador span,
+:root.dark-theme app-empleados .person-main span,
+:root.dark-theme app-empleados .person-main small {
+  color: #aebbb6 !important;
+}
+
+:root.dark-theme .employee-card,
+:root.dark-theme .permission-card {
+  border-color: #384347;
+  background: #252d2f;
+  box-shadow: none;
+}
+
+:root.dark-theme .employee-card:hover,
+:root.dark-theme .permission-card:hover {
+  border-color: #52615d;
+  background: #293234;
+}
+
+:root.dark-theme .avatar {
+  background: #293f48;
+  color: #9bc8f2;
+}
+
+:root.dark-theme .pill:not(.admin) {
+  background: #263b4b;
+  color: #9cc8f2;
+}
+
+:root.dark-theme .empty-state {
+  border-style: dashed;
+  background: #1b2123;
+}
+
+:root.dark-theme .profile-trigger,
+:root.dark-theme .profile-photo,
+:root.dark-theme .photo-preview {
+  background:
+    linear-gradient(#202729, #202729) padding-box,
+    linear-gradient(135deg, #61d5a5, #5b91e8) border-box;
+  color: #c8f4e2;
+}
+
+:root.dark-theme .profile-actions button:hover,
+:root.dark-theme .profile-buttons button:hover,
+:root.dark-theme .secondary:hover {
+  background: #3a4649;
+}
+
+:root.dark-theme .profile-actions button:disabled,
+:root.dark-theme .profile-buttons button:disabled {
+  background: #242b2d;
+  color: #6f7c78;
+}
+
+:root.dark-theme .login-page,
+:root.dark-theme .reset-page {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(65, 190, 139, 0.13), transparent 34%),
+    linear-gradient(145deg, rgba(53, 75, 69, 0.15), rgba(35, 49, 61, 0.12)),
+    #101416;
+}
+
+:root.dark-theme .login-card,
+:root.dark-theme .reset-card {
+  border-color: #3a4548;
+  background: #202729;
+  box-shadow: 0 24px 58px rgba(0, 0, 0, 0.38);
+}
+
+:root.dark-theme .login-heading .eyebrow,
+:root.dark-theme .reset-heading span {
+  color: #79b8a0;
+}
+
+:root.dark-theme .link-button,
+:root.dark-theme .reset-card a {
+  color: #8ab8ff;
+}
+
+:root.dark-theme .summary-pill,
+:root.dark-theme .pill.admin,
+:root.dark-theme .status-aprobado {
+  border: 1px solid rgba(126, 224, 173, 0.18);
+}
+
+:root.dark-theme .status-pendiente {
+  border: 1px solid rgba(244, 201, 106, 0.18);
+}
+
+:root.dark-theme .status-rechazado {
+  border: 1px solid rgba(255, 155, 145, 0.18);
+}
+
+:root.dark-theme .success,
+:root.dark-theme .profile-success {
+  color: #7ee0ad;
+}
+
+:root.dark-theme .error,
+:root.dark-theme .profile-error,
+:root.dark-theme .photo-error {
+  color: #ff9b91;
+}
+
+:root.dark-theme button:disabled {
+  opacity: 0.48;
 }
