@@ -166,3 +166,30 @@
     </article>
   </section>
 </ng-template>
+
+<section class="vacation-overview">
+  <div class="vacation-overview-title">
+    <div>
+      <span class="eyebrow">{{ t("vacations") }}</span>
+      <h2>{{ auth.isAdmin() ? t("teamVacationBalance") : t("vacationBalance") }}</h2>
+    </div>
+    <div class="vacation-totals">
+      <span><strong>{{ totalApprovedVacationDays() }}</strong>{{ t("approvedVacationDays") }}</span>
+      <span><strong>{{ totalAvailableVacationDays() }}</strong>{{ t("availableVacationDays") }}</span>
+      <span><strong>{{ pendingVacationRequests() }}</strong>{{ t("pendingVacationRequests") }}</span>
+    </div>
+  </div>
+
+  <div class="vacation-summary-grid">
+    <article *ngFor="let tipo of vacationTypes">
+      <div class="vacation-card-heading">
+        <span>{{ vacationTypeLabel(tipo) }}</span>
+        <strong>{{ activeVacationBalance()[tipo].disponibles }}</strong>
+      </div>
+      <div class="bar vacation-bar">
+        <i [style.width.%]="activeVacationBalance()[tipo].total ? ((activeVacationBalance()[tipo].aprobados + activeVacationBalance()[tipo].pendientes) / activeVacationBalance()[tipo].total) * 100 : 0"></i>
+      </div>
+      <small>{{ activeVacationBalance()[tipo].aprobados }} {{ t("usedDays") }} · {{ activeVacationBalance()[tipo].pendientes }} {{ t("pendingDays") }} · {{ activeVacationBalance()[tipo].total }} {{ t("annualDays") }}</small>
+    </article>
+  </div>
+</section>

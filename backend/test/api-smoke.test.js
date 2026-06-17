@@ -4,11 +4,15 @@ import authMiddleware from "../src/middlewares/auth.middleware.js";
 import adminMiddleware from "../src/middlewares/admin.middleware.js";
 import permisosRoutes from "../src/routes/permisos.routes.js";
 import empleadosRoutes from "../src/routes/empleados.routes.js";
+import vacacionesRoutes from "../src/routes/vacaciones.routes.js";
+import notificacionesRoutes from "../src/routes/notificaciones.routes.js";
 import { app } from "../src/server.js";
 
 test("rutas principales se importan sin romper Express", () => {
   assert.ok(permisosRoutes);
   assert.ok(empleadosRoutes);
+  assert.ok(vacacionesRoutes);
+  assert.ok(notificacionesRoutes);
   assert.ok(app);
 });
 

@@ -4,7 +4,7 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "API Gestor de Permisos Laborales",
+      title: "API TravelConnect - Permisos y Vacaciones",
       version: "1.0.0",
       description: "Documentación de la API del proyecto",
     },

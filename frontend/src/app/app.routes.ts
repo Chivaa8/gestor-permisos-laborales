@@ -4,6 +4,7 @@ import { DashboardComponent } from "./pages/dashboard/dashboard.component";
 import { EmpleadosComponent } from "./pages/empleados/empleados.component";
 import { PermisosComponent } from "./pages/permisos/permisos.component";
 import { ResetPasswordComponent } from "./pages/reset-password/reset-password.component";
+import { VacacionesComponent } from "./pages/vacaciones/vacaciones.component";
 import { authGuard } from "./services/auth/auth.guard";
 import { adminGuard } from "./services/auth/admin.guard";
 import { guestGuard } from "./services/auth/guest.guard";
@@ -14,6 +15,7 @@ export const routes: Routes = [
   { path: "dashboard", component: DashboardComponent, canActivate: [authGuard] },
   { path: "empleados", component: EmpleadosComponent, canActivate: [authGuard, adminGuard] },
   { path: "permisos", component: PermisosComponent, canActivate: [authGuard] },
+  { path: "vacaciones", component: VacacionesComponent, canActivate: [authGuard] },
   { path: "", pathMatch: "full", redirectTo: "login" },
   { path: "**", redirectTo: "login" },
 ];

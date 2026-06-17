@@ -49,3 +49,50 @@ export async function sendPasswordResetEmail({ to, resetUrl }) {
 
   return { sent: true };
 }
+
+export async function sendVacationApprovedEmail({
+  to,
+  nombre,
+  tipo,
+  fechaInicio,
+  fechaFin,
+  dias,
+  restantes,
+  year,
+}) {
+  const nombres = {
+    vacaciones: "vacaciones",
+    personales: "dias personales",
+    no_retribuidos: "dias no retribuidos",
+  };
+  const tipoTexto = nombres[tipo] || tipo;
+  const formato = new Intl.DateTimeFormat("es-ES", { dateStyle: "long", timeZone: "UTC" });
+  const subject = `Solicitud de ${tipoTexto} aprobada`;
+  const text = [
+    `Hola ${nombre},`,
+    `Tu solicitud de ${tipoTexto}, del ${formato.format(fechaInicio)} al ${formato.format(fechaFin)}, ha sido aprobada.`,
+    `Dias aprobados: ${dias}.`,
+    `Te quedan ${restantes} dias de ${tipoTexto} disponibles en ${year}.`,
+  ].join("\n\n");
+
+  if (!smtpConfigured()) {
+    console.log(`[vacaciones] SMTP no configurado. Notificacion para ${to}: ${text}`);
+    return { sent: false, reason: "SMTP_NOT_CONFIGURED" };
+  }
+
+  const transporter = createTransporter();
+  await transporter.sendMail({
+    from: process.env.SMTP_FROM || process.env.SMTP_USER,
+    to,
+    subject,
+    text,
+    html: `
+      <h2>Solicitud aprobada</h2>
+      <p>Hola <strong>${nombre}</strong>,</p>
+      <p>Tu solicitud de <strong>${tipoTexto}</strong>, del ${formato.format(fechaInicio)} al ${formato.format(fechaFin)}, ha sido aprobada.</p>
+      <p>Dias aprobados: <strong>${dias}</strong>.</p>
+      <p>Te quedan <strong>${restantes} dias</strong> de ${tipoTexto} disponibles en ${year}.</p>
+    `,
+  });
+  return { sent: true };
+}

@@ -1,11 +1,12 @@
 import { Component, HostListener, effect, inject } from "@angular/core";
 import { HttpErrorResponse } from "@angular/common/http";
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
-import { NgIf } from "@angular/common";
+import { DatePipe, NgFor, NgIf } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { AuthService } from "./services/auth/auth.service";
-import { Empleado, EmpleadoForm, PasswordUpdateRequest } from "./models/api.models";
+import { Empleado, EmpleadoForm, Notificacion, PasswordUpdateRequest } from "./models/api.models";
 import { EmpleadosService } from "./services/empleados/empleados.service";
+import { NotificacionesService } from "./services/notificaciones/notificaciones.service";
 import { AppLanguage, LanguageService } from "./services/language/language.service";
 import { filter } from "rxjs";
 import { normalizePhotoUrl } from "./models/photo-url";
@@ -29,7 +30,7 @@ const emptyPasswordForm = (): PasswordUpdateRequest => ({
 @Component({
   selector: "app-root",
   standalone: true,
-  imports: [FormsModule, NgIf, RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [DatePipe, FormsModule, NgFor, NgIf, RouterLink, RouterLinkActive, RouterOutlet],
   templateUrl: "./app.html",
   styleUrl: "./app.css",
 })
@@ -37,9 +38,11 @@ export class AppComponent {
   readonly auth = inject(AuthService);
   readonly language = inject(LanguageService);
   private readonly empleadosService = inject(EmpleadosService);
+  private readonly notificacionesService = inject(NotificacionesService);
   private readonly router = inject(Router);
 
   profileOpen = false;
+  messagesOpen = false;
   profileAction: "edit" | "add" | "photo" | "password" | "" = "";
   profileError = "";
   profileSuccess = "";
@@ -50,6 +53,7 @@ export class AppComponent {
   isDarkMode = localStorage.getItem("travelconnect_theme") === "dark";
   profilePhotoFailed = false;
   photoPreviewFailed = false;
+  notificaciones: Notificacion[] = [];
   private loadedProfileId = "";
 
   constructor() {
@@ -61,12 +65,15 @@ export class AppComponent {
         this.loadedProfileId = "";
         this.profile = undefined;
         this.profileOpen = false;
+        this.messagesOpen = false;
+        this.notificaciones = [];
         return;
       }
 
       if (this.loadedProfileId !== currentUser.id) {
         this.loadedProfileId = currentUser.id;
         this.loadProfile(currentUser.id);
+        this.loadNotifications();
       }
     });
 
@@ -79,13 +86,15 @@ export class AppComponent {
 
   @HostListener("document:click", ["$event"])
   closeProfileOnOutsideClick(event: MouseEvent): void {
-    if (!this.profileOpen || !(event.target instanceof Element)) {
+    if ((!this.profileOpen && !this.messagesOpen) || !(event.target instanceof Element)) {
       return;
     }
 
     const clickedInsideProfile = event.target.closest(".profile-area, .profile-menu");
-    if (!clickedInsideProfile) {
+    const clickedInsideMessages = event.target.closest(".messages-trigger, .messages-menu");
+    if (!clickedInsideProfile && !clickedInsideMessages) {
       this.closeProfile();
+      this.messagesOpen = false;
     }
   }
 
@@ -105,8 +114,26 @@ export class AppComponent {
     }
 
     this.profileOpen = true;
+    this.messagesOpen = false;
     this.profileError = "";
     this.profileSuccess = "";
+  }
+
+  toggleMessages(): void {
+    this.messagesOpen = !this.messagesOpen;
+    this.profileOpen = false;
+    if (this.messagesOpen) {
+      this.loadNotifications();
+      if (this.unreadNotifications() > 0) {
+        this.notificacionesService.markRead().subscribe({
+          next: () => this.notificaciones = this.notificaciones.map((item) => ({ ...item, leida: true })),
+        });
+      }
+    }
+  }
+
+  unreadNotifications(): number {
+    return this.notificaciones.filter((item) => !item.leida).length;
   }
 
   startEditProfile(): void {
@@ -256,6 +283,13 @@ export class AppComponent {
         this.profileForm = { ...empleado, password: "" };
       },
       error: () => (this.profileError = this.t("profileLoadError")),
+    });
+  }
+
+  private loadNotifications(): void {
+    this.notificacionesService.getMine().subscribe({
+      next: (data) => (this.notificaciones = data),
+      error: () => (this.notificaciones = []),
     });
   }
 

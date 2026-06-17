@@ -30,6 +30,10 @@
         <span class="nav-icon document-icon" aria-hidden="true"></span>
         <span>{{ t("permissions") }}</span>
       </a>
+      <a routerLink="/vacaciones" routerLinkActive="active">
+        <span class="nav-icon calendar-icon" aria-hidden="true"></span>
+        <span>{{ t("vacations") }}</span>
+      </a>
       <a *ngIf="auth.isAdmin()" routerLink="/empleados" routerLinkActive="active">
         <span class="nav-icon people-icon" aria-hidden="true"></span>
         <span>{{ t("employees") }}</span>
@@ -65,6 +69,27 @@
           English
         </button>
       </div>
+
+      <button class="messages-trigger" type="button" (click)="toggleMessages()" [attr.aria-label]="t('messages')">
+        <span class="message-icon" aria-hidden="true"></span>
+        <b *ngIf="unreadNotifications() > 0">{{ unreadNotifications() }}</b>
+      </button>
+
+      <section class="messages-menu" *ngIf="messagesOpen">
+        <div class="messages-head">
+          <strong>{{ t("messages") }}</strong>
+          <span>{{ notificaciones.length }}</span>
+        </div>
+        <div class="message-empty" *ngIf="notificaciones.length === 0">{{ t("noMessages") }}</div>
+        <article class="message-item" *ngFor="let notificacion of notificaciones" [class.unread]="!notificacion.leida">
+          <div class="message-type" [attr.data-type]="notificacion.tipo"></div>
+          <div>
+            <strong>{{ notificacion.titulo }}</strong>
+            <p>{{ notificacion.mensaje }}</p>
+            <small>{{ notificacion.fechaCreacion | date: "dd/MM/yyyy HH:mm" }}</small>
+          </div>
+        </article>
+      </section>
 
       <div class="profile-area">
         <div class="profile-label">

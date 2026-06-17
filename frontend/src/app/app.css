@@ -169,6 +169,27 @@ a.active .nav-icon {
   transform: translateY(-9px);
 }
 
+.calendar-icon::before {
+  content: "";
+  width: 16px;
+  height: 15px;
+  border: 2px solid currentColor;
+  border-radius: 3px;
+  background:
+    linear-gradient(currentColor 0 0) 0 4px / 100% 2px no-repeat,
+    radial-gradient(circle, currentColor 1.5px, transparent 2px) 2px 8px / 6px 6px repeat-x;
+}
+
+.calendar-icon::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 4px;
+  border-left: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  transform: translateY(-9px);
+}
+
 .people-icon::before {
   content: "";
   width: 9px;
@@ -227,7 +248,7 @@ a.active .nav-icon {
   z-index: 10;
   min-height: 74px;
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: 1fr auto auto auto;
   align-items: center;
   gap: 12px;
   padding: 16px 34px 8px;
@@ -279,6 +300,127 @@ a.active .nav-icon {
   align-items: center;
   gap: 12px;
 }
+
+.messages-trigger {
+  position: relative;
+  justify-self: end;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #d7e1ef;
+  border-radius: 8px;
+  background: #fff;
+  color: #24324b;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(23, 32, 51, 0.08);
+}
+
+.messages-trigger:hover {
+  background: #e8f7ef;
+}
+
+.messages-trigger b {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #c6352b;
+  color: #fff;
+  font-size: .72rem;
+}
+
+.message-icon {
+  width: 19px;
+  height: 14px;
+  border-radius: 3px;
+  background: currentColor;
+}
+
+.message-icon::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: currentColor;
+  transform: translate(3px, 8px) rotate(45deg);
+}
+
+.messages-menu {
+  position: absolute;
+  top: 66px;
+  right: 104px;
+  width: min(390px, calc(100vw - 42px));
+  max-height: min(520px, calc(100vh - 86px));
+  overflow: auto;
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid #dbe5f2;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 24px 60px rgba(23, 32, 51, 0.18);
+}
+
+.messages-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.messages-head span {
+  display: grid;
+  place-items: center;
+  min-width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: #eef3f9;
+  color: #293a55;
+}
+
+.message-empty {
+  padding: 24px;
+  border: 1px dashed #cbd7e7;
+  border-radius: 8px;
+  color: #66758e;
+  text-align: center;
+}
+
+.message-item {
+  display: grid;
+  grid-template-columns: 12px 1fr;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #e2e9f3;
+  border-radius: 8px;
+  background: #fbfdff;
+}
+
+.message-item.unread {
+  background: #f1f8ff;
+  border-color: #bcd2ef;
+}
+
+.message-item p {
+  margin: 4px 0 6px;
+  color: #43516a;
+}
+
+.message-type {
+  width: 10px;
+  height: 100%;
+  min-height: 42px;
+  border-radius: 999px;
+  background: #8090a8;
+}
+
+.message-type[data-type="vacaciones"] { background: #36b37e; }
+.message-type[data-type="sueldo"] { background: #f2b84b; }
+.message-type[data-type="sistema"] { background: #2d6cdf; }
 
 .profile-label {
   display: grid;

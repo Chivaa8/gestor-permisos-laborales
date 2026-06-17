@@ -73,6 +73,42 @@ button {
   box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22);
 }
 
+:root.dark-theme app-vacaciones .balance-card,
+:root.dark-theme app-vacaciones .panel,
+:root.dark-theme app-vacaciones .request-card,
+:root.dark-theme app-dashboard .vacation-overview,
+:root.dark-theme app-dashboard .vacation-summary-grid article {
+  border-color: #354044;
+  background: #202729;
+  color: #edf3f0;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22);
+}
+
+:root.dark-theme app-vacaciones .request-card,
+:root.dark-theme app-dashboard .vacation-summary-grid article {
+  background: #252d2f;
+  box-shadow: none;
+}
+
+:root.dark-theme app-vacaciones .quota-details b,
+:root.dark-theme app-vacaciones .balance-heading strong,
+:root.dark-theme app-dashboard .vacation-card-heading strong,
+:root.dark-theme app-dashboard .vacation-totals strong {
+  color: #f6faf8;
+}
+
+:root.dark-theme app-vacaciones .days-preview,
+:root.dark-theme app-dashboard .vacation-totals span {
+  background: #293b35;
+  color: #9de3c5;
+}
+
+:root.dark-theme app-vacaciones .request-dates span {
+  border: 1px solid #465256;
+  background: #30383a;
+  color: #e8efec;
+}
+
 :root.dark-theme .page-logo {
   border: 1px solid #3b4648;
   border-radius: 6px;

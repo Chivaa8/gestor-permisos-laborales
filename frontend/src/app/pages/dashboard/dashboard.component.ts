@@ -1,10 +1,17 @@
 import { Component, OnInit } from "@angular/core";
 import { NgFor, NgIf } from "@angular/common";
 import { AuthService } from "../../services/auth/auth.service";
-import { DashboardEstados, Empleado, EstadoPermiso, Permiso } from "../../models/api.models";
+import { DashboardEstados, DashboardVacaciones, Empleado, EstadoPermiso, Permiso, SaldoVacaciones, TipoVacacion } from "../../models/api.models";
 import { EmpleadosService } from "../../services/empleados/empleados.service";
 import { PermisosService } from "../../services/permisos/permisos.service";
 import { LanguageService } from "../../services/language/language.service";
+import { VacacionesService } from "../../services/vacaciones/vacaciones.service";
+
+const emptyVacationBalance = (): SaldoVacaciones => ({
+  vacaciones: { total: 25, aprobados: 0, pendientes: 0, disponibles: 25 },
+  personales: { total: 3, aprobados: 0, pendientes: 0, disponibles: 3 },
+  no_retribuidos: { total: 7, aprobados: 0, pendientes: 0, disponibles: 7 },
+});
 
 @Component({
   selector: "app-dashboard",
@@ -29,11 +36,20 @@ export class DashboardComponent implements OnInit {
     rechazado: "#e05252",
   };
   error = "";
+  readonly vacationTypes: TipoVacacion[] = ["vacaciones", "personales", "no_retribuidos"];
+  vacationBalance = emptyVacationBalance();
+  vacationSummary: DashboardVacaciones = {
+    year: new Date().getFullYear(),
+    empleados: 0,
+    estados: { pendiente: 0, aprobado: 0, rechazado: 0 },
+    saldo: emptyVacationBalance(),
+  };
 
   constructor(
     readonly auth: AuthService,
     private readonly permisosService: PermisosService,
     private readonly empleadosService: EmpleadosService,
+    private readonly vacacionesService: VacacionesService,
     public readonly language: LanguageService,
   ) {}
 
@@ -57,6 +73,10 @@ export class DashboardComponent implements OnInit {
         },
         error: () => (this.error = "No se han podido cargar tus permisos"),
       });
+      this.vacacionesService.getBalance(userId).subscribe({
+        next: (data) => (this.vacationBalance = data.saldo),
+        error: () => (this.error = "No se ha podido cargar el saldo de vacaciones"),
+      });
       return;
     }
 
@@ -73,6 +93,11 @@ export class DashboardComponent implements OnInit {
     this.permisosService.getAll().subscribe({
       next: (data) => (this.permisos = data),
       error: () => (this.error = "No se han podido cargar los permisos"),
+    });
+
+    this.vacacionesService.dashboard().subscribe({
+      next: (data) => (this.vacationSummary = data),
+      error: () => (this.error = "No se ha podido cargar el resumen de vacaciones"),
     });
   }
 
@@ -160,5 +185,28 @@ export class DashboardComponent implements OnInit {
         .map((permiso) => (typeof permiso.empId === "string" ? permiso.empId : permiso.empId?._id))
         .filter((id): id is string => Boolean(id)),
     );
+  }
+
+  activeVacationBalance(): SaldoVacaciones {
+    return this.auth.isAdmin() ? this.vacationSummary.saldo : this.vacationBalance;
+  }
+
+  vacationTypeLabel(tipo: TipoVacacion): string {
+    return this.t({ vacaciones: "annualLeave", personales: "personalDays", no_retribuidos: "unpaidLeave" }[tipo]);
+  }
+
+  totalApprovedVacationDays(): number {
+    const saldo = this.activeVacationBalance();
+    return this.vacationTypes.reduce((total, tipo) => total + saldo[tipo].aprobados, 0);
+  }
+
+  totalAvailableVacationDays(): number {
+    const saldo = this.activeVacationBalance();
+    return this.vacationTypes.reduce((total, tipo) => total + saldo[tipo].disponibles, 0);
+  }
+
+  pendingVacationRequests(): number {
+    if (this.auth.isAdmin()) return this.vacationSummary.estados.pendiente;
+    return this.vacationTypes.reduce((total, tipo) => total + this.vacationBalance[tipo].pendientes, 0);
   }
 }

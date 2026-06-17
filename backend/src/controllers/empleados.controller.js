@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import Empleado from "../models/employee.model.js";
 import Permiso from "../schemas/permiso.schema.js";
+import Vacacion from "../schemas/vacacion.schema.js";
+import { crearNotificacion } from "../services/notificaciones.service.js";
 import { isValidEmail, normalizeEmail, normalizePhotoUrl } from "../utils/validation.js";
 
 class empleadosController {
@@ -213,6 +215,12 @@ class empleadosController {
 
       empleado.sueldo = sueldoNuevo;
       await empleado.save();
+      await crearNotificacion({
+        empId: empleado._id,
+        tipo: "sueldo",
+        titulo: operacion === "subir" ? "Sueldo subido" : "Sueldo bajado",
+        mensaje: `Tu sueldo ha cambiado de ${sueldoActual} a ${sueldoNuevo}.`,
+      });
 
       res.status(200).json(empleado);
     } catch (e) {
@@ -234,8 +242,15 @@ class empleadosController {
         return res.status(404).json({ error: "Empleado no encontrado" });
       }
 
-      const permisosEliminados = await Permiso.deleteMany({ empId: id });
+      const [permisosEliminados, vacacionesEliminadas] = await Promise.all([
+        Permiso.deleteMany({ empId: id }),
+        Vacacion.deleteMany({ empId: id }),
+      ]);
       await Permiso.updateMany(
+        { empTramitador: id },
+        { $unset: { empTramitador: "", fechaTramitacion: "" } },
+      );
+      await Vacacion.updateMany(
         { empTramitador: id },
         { $unset: { empTramitador: "", fechaTramitacion: "" } },
       );
@@ -244,6 +259,7 @@ class empleadosController {
       res.status(200).json({
         message: "Empleado despedido",
         permisosEliminados: permisosEliminados.deletedCount,
+        vacacionesEliminadas: vacacionesEliminadas.deletedCount,
       });
     } catch (e) {
       res.status(500).json({ error: e.message });

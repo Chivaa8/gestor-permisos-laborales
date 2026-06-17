@@ -6,6 +6,8 @@ import permisosRoutes from "./routes/permisos.routes.js";
 import empleadosRoutes from "./routes/empleados.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import tiposPermisoRoutes from "./routes/tiposPermiso.routes.js";
+import vacacionesRoutes from "./routes/vacaciones.routes.js";
+import notificacionesRoutes from "./routes/notificaciones.routes.js";
 import TipoPermiso from "./models/tipoPermiso.model.js";
 import Empleado from "./models/employee.model.js";
 import bcrypt from "bcryptjs";
@@ -26,6 +28,8 @@ app.use("/api/permisos", permisosRoutes);
 app.use("/api/empleados", empleadosRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/tipos-permiso", tiposPermisoRoutes);
+app.use("/api/vacaciones", vacacionesRoutes);
+app.use("/api/notificaciones", notificacionesRoutes);
 
 const defaultTiposPermiso = [
   "hospitalizacion",
