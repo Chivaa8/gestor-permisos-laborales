@@ -2,9 +2,10 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { calcularDiasInclusivos, crearSaldo, sonTiposIncompatibles } from "../src/services/vacaciones.service.js";
 
-test("calcularDiasInclusivos incluye fecha inicial y final", () => {
+test("calcularDiasInclusivos cuenta solo laborables de Barcelona", () => {
   assert.equal(calcularDiasInclusivos("2026-08-03", "2026-08-07"), 5);
-  assert.equal(calcularDiasInclusivos("2026-08-03", "2026-08-03"), 1);
+  assert.equal(calcularDiasInclusivos("2026-08-07", "2026-08-10"), 2);
+  assert.equal(calcularDiasInclusivos("2026-09-24", "2026-09-24"), 0);
 });
 
 test("crearSaldo separa dias aprobados y pendientes", () => {

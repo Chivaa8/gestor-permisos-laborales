@@ -3,6 +3,7 @@
     <span class="eyebrow">{{ t("timeOff") }}</span>
     <h1>{{ t("vacations") }}</h1>
     <p>{{ auth.isAdmin() ? t("vacationsAdminText") : t("vacationsBasicText") }}</p>
+    <a class="calendar-link" routerLink="/calendario">{{ t("openCalendar") }}</a>
   </div>
   <img class="page-logo" src="assets/travelconnect-logo.png" alt="TravelConnect">
 </header>
@@ -13,9 +14,9 @@
     <h2>{{ calendarTitle() }}</h2>
   </div>
   <div class="calendar-head">
-    <button type="button" class="ghost-action" (click)="moveMonth(-1)" [disabled]="calendarMonth === 0" [attr.aria-label]="t('previousMonth')">‹</button>
+    <button type="button" class="ghost-action" (click)="moveMonth(-1)" [disabled]="calendarMonth === 0" [attr.aria-label]="t('previousMonth')">&lsaquo;</button>
     <strong>{{ calendarTitle() }}</strong>
-    <button type="button" class="ghost-action" (click)="moveMonth(1)" [disabled]="calendarMonth === 11" [attr.aria-label]="t('nextMonth')">›</button>
+    <button type="button" class="ghost-action" (click)="moveMonth(1)" [disabled]="calendarMonth === 11" [attr.aria-label]="t('nextMonth')">&rsaquo;</button>
   </div>
   <div class="calendar-legend">
     <span><i class="disponible"></i>{{ t("available") }}</span>
@@ -27,14 +28,7 @@
   </div>
   <div class="calendar-grid">
     <ng-container *ngFor="let cell of calendarCells()">
-      <button
-        *ngIf="cell; else emptyCalendarCell"
-        type="button"
-        [class]="calendarDayClass(cell)"
-        [disabled]="cell.past"
-        [title]="availabilityLabel(cell.status)"
-        (click)="selectCalendarDate(cell.date)"
-      >
+      <button *ngIf="cell; else emptyCalendarCell" type="button" [class]="calendarDayClass(cell)" [disabled]="cell.past" [title]="availabilityLabel(cell.status)" (click)="selectCalendarDate(cell.date)">
         {{ cell.day }}
       </button>
       <ng-template #emptyCalendarCell><span class="calendar-empty"></span></ng-template>
@@ -46,10 +40,7 @@
   <article class="balance-card" *ngFor="let tipo of tipos" [attr.data-type]="tipo">
     <div class="balance-heading">
       <span class="type-icon" aria-hidden="true"></span>
-      <div>
-        <small>{{ currentYear }}</small>
-        <h2>{{ typeLabel(tipo) }}</h2>
-      </div>
+      <div><small>{{ currentYear }}</small><h2>{{ typeLabel(tipo) }}</h2></div>
       <strong>{{ saldo[tipo].disponibles }}</strong>
     </div>
     <div class="quota-track"><i [style.width.%]="usage(tipo)"></i></div>
@@ -62,47 +53,11 @@
 </section>
 
 <section class="vacation-layout">
-  <section class="panel calendar-panel">
-    <div class="panel-title">
-      <span>{{ t("availabilityCalendar") }}</span>
-      <h2>{{ calendarTitle() }}</h2>
-    </div>
-    <div class="calendar-head">
-      <button type="button" class="ghost-action" (click)="moveMonth(-1)" [disabled]="calendarMonth === 0" [attr.aria-label]="t('previousMonth')">‹</button>
-      <strong>{{ calendarTitle() }}</strong>
-      <button type="button" class="ghost-action" (click)="moveMonth(1)" [disabled]="calendarMonth === 11" [attr.aria-label]="t('nextMonth')">›</button>
-    </div>
-    <div class="calendar-legend">
-      <span><i class="disponible"></i>{{ t("available") }}</span>
-      <span><i class="dificil"></i>{{ t("difficult") }}</span>
-      <span><i class="no_disponible"></i>{{ t("unavailable") }}</span>
-    </div>
-    <div class="calendar-weekdays">
-      <span *ngFor="let day of ['L', 'M', 'X', 'J', 'V', 'S', 'D']">{{ day }}</span>
-    </div>
-    <div class="calendar-grid">
-      <ng-container *ngFor="let cell of calendarCells()">
-        <button
-          *ngIf="cell; else emptyCalendarCell"
-          type="button"
-          [class]="calendarDayClass(cell)"
-          [disabled]="cell.past"
-          [title]="availabilityLabel(cell.status)"
-          (click)="selectCalendarDate(cell.date)"
-        >
-          {{ cell.day }}
-        </button>
-        <ng-template #emptyCalendarCell><span class="calendar-empty"></span></ng-template>
-      </ng-container>
-    </div>
-  </section>
-
   <form class="panel request-form" (ngSubmit)="create()">
     <div class="panel-title">
       <span>{{ t("newVacationRequest") }}</span>
       <h2>{{ t("requestDays") }}</h2>
     </div>
-
     <label>
       {{ t("leaveType") }}
       <select name="tipoVacacion" [(ngModel)]="form.tipo" required>
@@ -110,48 +65,13 @@
         <option *ngFor="let tipo of tipos" [value]="tipo">{{ typeLabel(tipo) }}</option>
       </select>
     </label>
-
-    <div class="date-grid">
-      <label>{{ t("startDate") }}<input name="vacacionInicio" type="text" readonly [(ngModel)]="form.fechaInicio" required></label>
-      <label>{{ t("endDate") }}<input name="vacacionFin" type="text" readonly [(ngModel)]="form.fechaFin" required></label>
+    <div class="selected-dates">
+      <span><small>{{ t("startDate") }}</small><strong>{{ form.fechaInicio || "—" }}</strong></span>
+      <span><small>{{ t("endDate") }}</small><strong>{{ form.fechaFin || "—" }}</strong></span>
     </div>
-
-    <div class="calendar-picker">
-      <div class="calendar-head">
-        <button type="button" class="ghost-action" (click)="moveMonth(-1)" [disabled]="calendarMonth === 0" [attr.aria-label]="t('previousMonth')">‹</button>
-        <strong>{{ calendarTitle() }}</strong>
-        <button type="button" class="ghost-action" (click)="moveMonth(1)" [disabled]="calendarMonth === 11" [attr.aria-label]="t('nextMonth')">›</button>
-      </div>
-      <div class="calendar-legend">
-        <span><i class="disponible"></i>{{ t("available") }}</span>
-        <span><i class="dificil"></i>{{ t("difficult") }}</span>
-        <span><i class="no_disponible"></i>{{ t("unavailable") }}</span>
-      </div>
-      <div class="calendar-weekdays">
-        <span *ngFor="let day of ['L', 'M', 'X', 'J', 'V', 'S', 'D']">{{ day }}</span>
-      </div>
-      <div class="calendar-grid">
-        <ng-container *ngFor="let cell of calendarCells()">
-          <button
-            *ngIf="cell; else emptyCalendarCell"
-            type="button"
-            [class]="calendarDayClass(cell)"
-            [disabled]="cell.past"
-            [title]="availabilityLabel(cell.status)"
-            (click)="selectCalendarDate(cell.date)"
-          >
-            {{ cell.day }}
-          </button>
-          <ng-template #emptyCalendarCell><span class="calendar-empty"></span></ng-template>
-        </ng-container>
-      </div>
-    </div>
-
     <div class="days-preview" *ngIf="requestedDays() > 0">
-      <strong>{{ requestedDays() }}</strong>
-      <span>{{ t("requestedCalendarDays") }}</span>
+      <strong>{{ requestedDays() }}</strong><span>{{ t("requestedCalendarDays") }}</span>
     </div>
-
     <label>{{ t("optionalComment") }}<textarea name="comentario" [(ngModel)]="form.comentario" rows="4" maxlength="500"></textarea></label>
     <button class="primary-action" type="submit" [disabled]="!form.tipo || !form.fechaInicio || !form.fechaFin">{{ t("sendRequest") }}</button>
     <p class="success" *ngIf="success">{{ success }}</p>
@@ -163,7 +83,6 @@
       <span>{{ auth.isAdmin() ? t("administration") : t("history") }}</span>
       <h2>{{ auth.isAdmin() ? t("vacationRequests") : t("myVacationRequests") }}</h2>
     </div>
-
     <div class="filters" *ngIf="auth.isAdmin()">
       <select name="vacacionEstado" [(ngModel)]="filters.estado" (change)="load()">
         <option value="">{{ t("allStatuses") }}</option>
@@ -180,9 +99,7 @@
         <option *ngFor="let empleado of empleados" [value]="empleado._id">{{ empleado.nombre }} {{ empleado.apellido }}</option>
       </select>
     </div>
-
     <div class="empty-state" *ngIf="solicitudes.length === 0">{{ t("noVacationRequests") }}</div>
-
     <div class="request-list" *ngIf="solicitudes.length > 0">
       <article class="request-card" *ngFor="let solicitud of solicitudes">
         <div class="request-person">
@@ -191,16 +108,11 @@
           <small *ngIf="solicitud.comentario">{{ solicitud.comentario }}</small>
         </div>
         <div class="request-dates">
-          <span>{{ solicitud.fechaInicio | date: "dd/MM/yyyy" }}</span>
-          <i aria-hidden="true">→</i>
-          <span>{{ solicitud.fechaFin | date: "dd/MM/yyyy" }}</span>
+          <span>{{ solicitud.fechaInicio | date: "dd/MM/yyyy" }}</span><i aria-hidden="true">&rarr;</i><span>{{ solicitud.fechaFin | date: "dd/MM/yyyy" }}</span>
         </div>
         <div class="request-days"><strong>{{ solicitud.dias }}</strong><small>{{ t("days") }}</small></div>
         <span [class]="statusClass(solicitud.estado)">{{ statusLabel(solicitud.estado) }}</span>
-        <div class="request-manager">
-          <small>{{ t("manager") }}</small>
-          <span>{{ empleadoNombre(solicitud.empTramitador) }}</span>
-        </div>
+        <div class="request-manager"><small>{{ t("manager") }}</small><span>{{ empleadoNombre(solicitud.empTramitador) }}</span></div>
         <div class="row-actions" *ngIf="auth.isAdmin()">
           <button class="approve" type="button" *ngIf="solicitud.estado === 'pendiente'" (click)="approve(solicitud._id)">{{ t("approve") }}</button>
           <button class="reject" type="button" *ngIf="solicitud.estado === 'pendiente'" (click)="reject(solicitud._id)">{{ t("reject") }}</button>

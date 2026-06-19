@@ -2,6 +2,7 @@ import { DatePipe, NgFor, NgIf } from "@angular/common";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
+import { RouterLink } from "@angular/router";
 import {
   Empleado,
   EstadoPermiso,
@@ -11,6 +12,7 @@ import {
   VacacionForm,
 } from "../../models/api.models";
 import { empleadoNombre } from "../../models/formatters";
+import { esFestivoBarcelona, esLaborableBarcelona } from "../../models/festivos-barcelona";
 import { AuthService } from "../../services/auth/auth.service";
 import { EmpleadosService } from "../../services/empleados/empleados.service";
 import { LanguageService } from "../../services/language/language.service";
@@ -35,7 +37,7 @@ const emptyBalance = (): SaldoVacaciones => ({
 @Component({
   selector: "app-vacaciones",
   standalone: true,
-  imports: [DatePipe, FormsModule, NgFor, NgIf],
+  imports: [DatePipe, FormsModule, NgFor, NgIf, RouterLink],
   templateUrl: "./vacaciones.component.html",
   styleUrl: "./vacaciones.component.css",
 })
@@ -43,7 +45,6 @@ export class VacacionesComponent implements OnInit {
   readonly tipos: TipoVacacion[] = ["vacaciones", "personales", "no_retribuidos"];
   readonly currentYear = new Date().getFullYear();
   readonly today = new Date().toISOString().slice(0, 10);
-  readonly yearEnd = `${this.currentYear}-12-31`;
   readonly empleadoNombre = empleadoNombre;
   solicitudes: Vacacion[] = [];
   empleados: Empleado[] = [];
@@ -152,9 +153,11 @@ export class VacacionesComponent implements OnInit {
 
   requestedDays(): number {
     if (!this.form.fechaInicio || !this.form.fechaFin || this.form.fechaFin < this.form.fechaInicio) return 0;
-    const start = new Date(`${this.form.fechaInicio}T00:00:00Z`).getTime();
-    const end = new Date(`${this.form.fechaFin}T00:00:00Z`).getTime();
-    return Math.floor((end - start) / 86_400_000) + 1;
+    let days = 0;
+    for (const date = new Date(`${this.form.fechaInicio}T00:00:00Z`); date <= new Date(`${this.form.fechaFin}T00:00:00Z`); date.setUTCDate(date.getUTCDate() + 1)) {
+      if (esLaborableBarcelona(date.toISOString().slice(0, 10))) days += 1;
+    }
+    return days;
   }
 
   calendarTitle(): string {
@@ -245,8 +248,8 @@ export class VacacionesComponent implements OnInit {
   }
 
   private disponibilidad(date: string): DisponibilidadDia {
-    const [, month, day] = date.split("-").map(Number);
-    if ((month === 12 && day >= 24) || (month === 1 && day <= 6)) return "no_disponible";
+    const [, month] = date.split("-").map(Number);
+    if (!esLaborableBarcelona(date) || esFestivoBarcelona(date)) return "no_disponible";
     if (month >= 6 && month <= 8) return "dificil";
     return "disponible";
   }

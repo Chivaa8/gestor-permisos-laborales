@@ -5,16 +5,15 @@ export const LIMITES_VACACIONES = Object.freeze({
 });
 
 export function calcularDiasInclusivos(fechaInicio, fechaFin) {
-  const inicio = new Date(fechaInicio);
-  const fin = new Date(fechaFin);
+  const inicio = fechaIso(fechaInicio);
+  const fin = fechaIso(fechaFin);
+  if (!inicio || !fin || fin < inicio) return 0;
 
-  if (Number.isNaN(inicio.getTime()) || Number.isNaN(fin.getTime())) {
-    return 0;
+  let dias = 0;
+  for (const date = new Date(`${inicio}T00:00:00Z`); date <= new Date(`${fin}T00:00:00Z`); date.setUTCDate(date.getUTCDate() + 1)) {
+    if (esLaborableBarcelona(date)) dias += 1;
   }
-
-  const inicioUtc = Date.UTC(inicio.getUTCFullYear(), inicio.getUTCMonth(), inicio.getUTCDate());
-  const finUtc = Date.UTC(fin.getUTCFullYear(), fin.getUTCMonth(), fin.getUTCDate());
-  return Math.floor((finUtc - inicioUtc) / 86_400_000) + 1;
+  return dias;
 }
 
 export function sonTiposIncompatibles(tipoA, tipoB) {
@@ -36,7 +35,9 @@ export function crearSaldo(vacaciones = []) {
     }
 
     const campo = solicitud.estado === "aprobado" ? "aprobados" : "pendientes";
-    saldo[solicitud.tipo][campo] += solicitud.dias;
+    saldo[solicitud.tipo][campo] += solicitud.fechaInicio && solicitud.fechaFin
+      ? calcularDiasInclusivos(solicitud.fechaInicio, solicitud.fechaFin)
+      : solicitud.dias;
   }
 
   for (const tipo of Object.keys(saldo)) {
@@ -48,3 +49,4 @@ export function crearSaldo(vacaciones = []) {
 
   return saldo;
 }
+import { esLaborableBarcelona, fechaIso } from "./festivos.service.js";

@@ -34,6 +34,10 @@
         <span class="nav-icon calendar-icon" aria-hidden="true"></span>
         <span>{{ t("vacations") }}</span>
       </a>
+      <a routerLink="/calendario" routerLinkActive="active">
+        <span class="nav-icon calendar-icon" aria-hidden="true"></span>
+        <span>{{ t("calendar") }}</span>
+      </a>
       <a *ngIf="auth.isAdmin()" routerLink="/empleados" routerLinkActive="active">
         <span class="nav-icon people-icon" aria-hidden="true"></span>
         <span>{{ t("employees") }}</span>

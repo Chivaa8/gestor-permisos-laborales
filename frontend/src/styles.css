@@ -76,6 +76,8 @@ button {
 :root.dark-theme app-vacaciones .balance-card,
 :root.dark-theme app-vacaciones .panel,
 :root.dark-theme app-vacaciones .request-card,
+:root.dark-theme app-calendario .calendar-panel,
+:root.dark-theme app-calendario .day-modal,
 :root.dark-theme app-dashboard .vacation-overview,
 :root.dark-theme app-dashboard .vacation-summary-grid article {
   border-color: #354044;
@@ -85,9 +87,21 @@ button {
 }
 
 :root.dark-theme app-vacaciones .request-card,
+:root.dark-theme app-calendario .calendar-day,
+:root.dark-theme app-calendario .day-modal article,
 :root.dark-theme app-dashboard .vacation-summary-grid article {
   background: #252d2f;
   box-shadow: none;
+}
+
+:root.dark-theme app-calendario .calendar-day {
+  border-color: #384347;
+  color: #edf3f0;
+}
+
+:root.dark-theme app-calendario .calendar-day.has-events:hover {
+  border-color: #61d5a5;
+  background: #293b35;
 }
 
 :root.dark-theme app-vacaciones .quota-details b,

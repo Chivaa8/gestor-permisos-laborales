@@ -5,6 +5,7 @@ import { EmpleadosComponent } from "./pages/empleados/empleados.component";
 import { PermisosComponent } from "./pages/permisos/permisos.component";
 import { ResetPasswordComponent } from "./pages/reset-password/reset-password.component";
 import { VacacionesComponent } from "./pages/vacaciones/vacaciones.component";
+import { CalendarioComponent } from "./pages/calendario/calendario.component";
 import { authGuard } from "./services/auth/auth.guard";
 import { adminGuard } from "./services/auth/admin.guard";
 import { guestGuard } from "./services/auth/guest.guard";
@@ -16,6 +17,7 @@ export const routes: Routes = [
   { path: "empleados", component: EmpleadosComponent, canActivate: [authGuard, adminGuard] },
   { path: "permisos", component: PermisosComponent, canActivate: [authGuard] },
   { path: "vacaciones", component: VacacionesComponent, canActivate: [authGuard] },
+  { path: "calendario", component: CalendarioComponent, canActivate: [authGuard] },
   { path: "", pathMatch: "full", redirectTo: "login" },
   { path: "**", redirectTo: "login" },
 ];

@@ -1,0 +1,64 @@
+<header class="page-header">
+  <div>
+    <span class="eyebrow">{{ t("calendar") }}</span>
+    <h1>{{ t("calendar") }}</h1>
+    <p>{{ t("calendarText") }}</p>
+  </div>
+</header>
+
+<section class="calendar-panel">
+  <div class="calendar-toolbar">
+    <button type="button" (click)="moveMonth(-1)" [attr.aria-label]="t('previousMonth')">‹</button>
+    <h2>{{ monthTitle() }}</h2>
+    <button type="button" (click)="moveMonth(1)" [attr.aria-label]="t('nextMonth')">›</button>
+  </div>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <div class="calendar-legend">
+    <span><i class="vacation-color"></i>{{ t("vacations") }}</span>
+    <span><i class="permit-color"></i>{{ t("permissions") }}</span>
+    <span><i class="mixed-color"></i>{{ t("mixedAbsences") }}</span>
+  </div>
+
+  <div class="weekdays" aria-hidden="true">
+    <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
+  </div>
+
+  <div class="calendar-grid">
+    <ng-container *ngFor="let day of days()">
+      <div class="empty-day" *ngIf="!day"></div>
+      <button [class]="dayClass(day)" *ngIf="day" type="button" [class.has-events]="day.events.length" (click)="open(day)">
+        <b>{{ day.number }}</b>
+
+        <span class="crowded" *ngIf="uniquePeople(day) > 2">{{ t("twoOrMorePeople") }}</span>
+        <ng-container *ngIf="uniquePeople(day) <= 2">
+          <span class="event" [class.vacation-event]="event.kind === 'vacaciones'" [class.permit-event]="event.kind === 'permiso'" *ngFor="let event of day.events">
+            <strong *ngIf="auth.isAdmin()">{{ event.employee }}</strong>
+            {{ eventLabel(event) }}
+          </span>
+        </ng-container>
+      </button>
+    </ng-container>
+  </div>
+
+  <p class="empty-message" *ngIf="!error && events.length === 0">{{ t("noCalendarEvents") }}</p>
+</section>
+
+<div class="modal-backdrop" *ngIf="selectedDay" (click)="close()">
+  <section class="day-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <div class="modal-heading">
+      <div>
+        <span>{{ t("dayDetails") }}</span>
+        <h2>{{ selectedDay.date }}</h2>
+      </div>
+      <button type="button" (click)="close()" aria-label="Cerrar">×</button>
+    </div>
+
+    <article *ngFor="let event of selectedDay.events">
+      <strong>{{ event.employee }}</strong>
+      <span>{{ eventLabel(event) }}</span>
+      <small>{{ event.status }}</small>
+    </article>
+  </section>
+</div>

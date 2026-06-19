@@ -58,6 +58,9 @@ class VacacionesController {
       }
 
       const dias = calcularDiasInclusivos(inicio, fin);
+      if (!dias) {
+        return res.status(400).json({ error: "El periodo no contiene dias laborables" });
+      }
       const year = inicio.getUTCFullYear();
       const saldo = await saldoEmpleado(req.user.id, year);
       if (dias > saldo[tipo].disponibles) {
@@ -176,6 +179,7 @@ class VacacionesController {
       }
 
       const year = vacacion.fechaInicio.getUTCFullYear();
+      vacacion.dias = calcularDiasInclusivos(vacacion.fechaInicio, vacacion.fechaFin);
       const saldoAntes = await saldoEmpleado(vacacion.empId._id, year);
       const disponiblesSinEstaPendiente = saldoAntes[vacacion.tipo].disponibles + vacacion.dias;
       if (vacacion.dias > disponiblesSinEstaPendiente) {
@@ -276,6 +280,7 @@ class VacacionesController {
       );
       const estados = { pendiente: 0, aprobado: 0, rechazado: 0 };
       for (const solicitud of solicitudes) {
+        solicitud.dias = calcularDiasInclusivos(solicitud.fechaInicio, solicitud.fechaFin);
         estados[solicitud.estado] += 1;
         if (solicitud.estado === "aprobado") resumen[solicitud.tipo].aprobados += solicitud.dias;
         if (solicitud.estado === "pendiente") resumen[solicitud.tipo].pendientes += solicitud.dias;
