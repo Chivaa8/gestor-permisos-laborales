@@ -59,6 +59,8 @@ button {
 
 :root.dark-theme .language-switch,
 :root.dark-theme .theme-toggle,
+:root.dark-theme .messages-trigger,
+:root.dark-theme .chat-trigger,
 :root.dark-theme .profile-menu,
 :root.dark-theme .login-card,
 :root.dark-theme .panel,

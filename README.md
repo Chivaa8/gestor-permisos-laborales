@@ -12,6 +12,8 @@ Aplicación web para gestionar permisos laborales de empleados. El proyecto esta
 
 ## Funcionalidades principales
 
+La aplicación gestiona permisos laborales, vacaciones y ausencias mediante paneles diferenciados para administradores y usuarios.
+
 ### Autenticacion
 
 - Login con usuario y password.
@@ -38,6 +40,9 @@ Aplicación web para gestionar permisos laborales de empleados. El proyecto esta
   - Filtrar por estado, creador o tramitador.
   - Aprobar o rechazar permisos pendientes.
   - Eliminar permisos.
+- Gestión de vacaciones: consulta, filtros, aprobación, rechazo, eliminación y saldo anual por tipo.
+- Calendario general de vacaciones y permisos de toda la plantilla.
+- Agrupación de días con más de dos empleados ausentes y detalle al pulsar.
 - Gestión de perfil propio:
   - Editar datos existentes.
   - Anadir informacion pendiente.
@@ -52,6 +57,8 @@ Aplicación web para gestionar permisos laborales de empleados. El proyecto esta
 - Los permisos se crean automáticamente en estado `pendiente`.
 - La fecha de creación se asigna desde el sistema.
 - No se permite crear permisos con fechas anteriores al dia actual.
+- Solicitar vacaciones, días personales y días no retribuidos.
+- Consultar su saldo anual y ver sus ausencias en el calendario.
 
 ### Interfaz
 
@@ -61,6 +68,10 @@ Aplicación web para gestionar permisos laborales de empleados. El proyecto esta
 - Dashboard visual con graficos.
 - Panel de perfil desplegable.
 - Vista diferenciada para usuarios `admin` y `basic`.
+- Calendario mensual general de vacaciones y permisos.
+- Calendario grande de disponibilidad: verde disponible, amarillo difícil y rojo no laborable.
+- Los sábados, domingos y festivos oficiales de España, Cataluña y Barcelona no descuentan días.
+- Calendario laboral 2026 con los festivos locales de Barcelona del 25 de mayo y 24 de septiembre.
 
 ## Estructura del proyecto
 
@@ -243,6 +254,8 @@ Incluye documentacion para:
 - Empleados.
 - Permisos.
 - Tipos de permiso.
+- Vacaciones.
+- Notificaciones.
 
 ## Endpoints principales
 
@@ -286,6 +299,19 @@ Incluye documentacion para:
 | Metodo | Ruta | Descripción |
 | --- | --- | --- |
 | GET | `/api/tipos-permiso` | Listar tipos de permiso |
+
+### Vacaciones
+
+| Metodo | Ruta | Descripcion |
+| --- | --- | --- |
+| POST | `/api/vacaciones` | Crear una solicitud |
+| GET | `/api/vacaciones` | Listar todas las solicitudes como admin |
+| GET | `/api/vacaciones/mias` | Consultar las solicitudes propias |
+| GET | `/api/vacaciones/saldo/:id` | Consultar el saldo anual |
+| PUT | `/api/vacaciones/:id/aprobar` | Aprobar una solicitud |
+| PUT | `/api/vacaciones/:id/rechazar` | Rechazar una solicitud |
+| DELETE | `/api/vacaciones/:id` | Eliminar una solicitud |
+| GET | `/api/vacaciones/dashboard/resumen` | Resumen anual de la plantilla |
 
 Los tipos de permiso se crean automáticamente al arrancar el backend si no existen.
 
@@ -351,7 +377,10 @@ npm run build
 2. Entrar en `http://localhost:4200`.
 3. Crear un usuario basic desde la pantalla de login o iniciar sesion con un usuario existente.
 4. Un usuario basic puede crear permisos y consultar su historial.
-5. Un usuario admin puede contratar/despedir empleados, aprobar/rechazar permisos y ver el dashboard.
+5. Desde Vacaciones se seleccionan las fechas en el calendario grande.
+6. El sistema descuenta únicamente días laborables de Barcelona.
+7. Cada usuario ve sus ausencias en Calendario; el admin ve las de toda la plantilla.
+8. Un usuario admin puede contratar/despedir empleados, aprobar/rechazar solicitudes y ver el dashboard.
 
 ## Seguridad
 
@@ -362,6 +391,12 @@ npm run build
 - Los tokens de recuperación de contraseña caducan a los 5 minutos.
 - El archivo `.env` no debe subirse al repositorio.
 
-## Autores
+---
 
-**Oriol Chiva Hidalgo**
+# Autor y creador del proyecto
+
+## Oriol Chiva Hidalgo
+
+Diseño, desarrollo e implementación completa del Gestor de Permisos Laborales de TravelConnect.
+
+**© 2026 Oriol Chiva Hidalgo. Todos los derechos reservados.**

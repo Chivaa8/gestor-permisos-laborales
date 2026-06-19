@@ -31,7 +31,7 @@
         <span>{{ t("permissions") }}</span>
       </a>
       <a routerLink="/vacaciones" routerLinkActive="active">
-        <span class="nav-icon calendar-icon" aria-hidden="true"></span>
+        <span class="nav-icon vacation-icon" aria-hidden="true"></span>
         <span>{{ t("vacations") }}</span>
       </a>
       <a routerLink="/calendario" routerLinkActive="active">
@@ -75,8 +75,12 @@
       </div>
 
       <button class="messages-trigger" type="button" (click)="toggleMessages()" [attr.aria-label]="t('messages')">
-        <span class="message-icon" aria-hidden="true"></span>
+        <span class="notification-icon" aria-hidden="true"></span>
         <b *ngIf="unreadNotifications() > 0">{{ unreadNotifications() }}</b>
+      </button>
+
+      <button class="chat-trigger" type="button" [attr.aria-label]="t('chatSoon')" [title]="t('chatSoon')">
+        <span class="chat-icon" aria-hidden="true"></span>
       </button>
 
       <section class="messages-menu" *ngIf="messagesOpen">
