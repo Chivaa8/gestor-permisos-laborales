@@ -142,3 +142,31 @@ export interface Notificacion {
   leida: boolean;
   fechaCreacion: string;
 }
+
+export interface ChatMensaje {
+  _id: string;
+  emisor: string;
+  receptor?: string;
+  grupo?: string;
+  mensaje: string;
+  leidoPor?: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ChatGrupo {
+  _id: string;
+  nombre: string;
+  participantes: string[];
+  creadoPor: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type ChatRealtimeEvent =
+  | { type: "mensaje"; data: ChatMensaje }
+  | { type: "grupo"; data: ChatGrupo }
+  | { type: "grupo-salida"; data: { grupo: string } }
+  | { type: "visto"; data: { lector: string; grupo?: string; messageIds: string[] } }
+  | { type: "escribiendo"; data: { emisor: string; receptor: string } }
+  | { type: "conectado"; data: Record<string, never> };

@@ -366,6 +366,20 @@ a.active .nav-icon {
   font-size: .72rem;
 }
 
+.chat-trigger b {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #2d6cdf;
+  color: #fff;
+  font-size: .72rem;
+}
+
 .notification-icon {
   position: relative;
   width: 18px;
@@ -437,6 +451,307 @@ a.active .nav-icon {
   border-radius: 8px;
   background: #fff;
   box-shadow: 0 24px 60px rgba(23, 32, 51, 0.18);
+}
+
+.chat-menu {
+  position: fixed;
+  top: 84px;
+  right: 22px;
+  bottom: 22px;
+  width: min(760px, calc(100vw - 44px));
+  z-index: 1000;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #dbe5f2;
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(23, 32, 51, 0.28);
+}
+
+.chat-window-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chat-window-actions button {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  background: #eef3f9;
+  color: #24324b;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.chat-window-actions button:hover {
+  background: #dfe8f5;
+}
+
+.chat-minimized {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #d7e1ef;
+  border-radius: 999px;
+  padding: 12px 16px;
+  background: #fff;
+  color: #24324b;
+  font-weight: 900;
+  box-shadow: 0 18px 42px rgba(23, 32, 51, 0.2);
+}
+
+.chat-minimized b {
+  min-width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #2d6cdf;
+  color: #fff;
+  font-size: .72rem;
+}
+
+.chat-box {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid #e2e9f3;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.chat-contacts {
+  min-height: 0;
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  padding: 10px;
+  overflow-y: auto;
+  background: #f6f9fd;
+  border-right: 1px solid #e2e9f3;
+}
+
+.chat-contacts button {
+  display: grid;
+  gap: 3px;
+  border: 0;
+  border-radius: 7px;
+  padding: 10px;
+  background: transparent;
+  color: #24324b;
+  text-align: left;
+  cursor: pointer;
+}
+
+.new-group-button {
+  background: #2f6f5f !important;
+  color: #fff !important;
+  font-weight: 900;
+}
+
+.chat-group-form {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid #dbe5f2;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.chat-group-form input[type="text"],
+.chat-group-form input:not([type]) {
+  width: 100%;
+  border: 1px solid #cbd7e7;
+  border-radius: 7px;
+  padding: 9px 10px;
+}
+
+.chat-group-form label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #24324b;
+  font-weight: 800;
+}
+
+.chat-group-form button {
+  border: 0;
+  border-radius: 7px;
+  padding: 9px 10px;
+  background: #2d6cdf;
+  color: #fff;
+  font-weight: 900;
+}
+
+.chat-group-form button:disabled {
+  background: #a7b4c5;
+}
+
+.chat-section-title {
+  margin-top: 6px;
+  color: #66758e;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.chat-contacts button.active,
+.chat-contacts button:hover {
+  background: #e8f7ef;
+}
+
+.chat-contacts small,
+.chat-messages small {
+  color: #66758e;
+}
+
+.chat-ticks {
+  color: #2d6cdf !important;
+  font-size: 0.86rem !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.08em;
+  text-transform: none !important;
+}
+
+.chat-thread {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  background: #fff;
+}
+
+.chat-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #e2e9f3;
+  font-weight: 900;
+}
+
+.group-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.group-actions button,
+.chat-add-people button {
+  border: 0;
+  border-radius: 7px;
+  padding: 8px 10px;
+  background: #eef3f9;
+  color: #24324b;
+  font-weight: 900;
+}
+
+.group-actions .danger-link {
+  color: #b42318;
+}
+
+.chat-add-people {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #e2e9f3;
+  background: #fbfdff;
+}
+
+.chat-add-people label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #24324b;
+  font-weight: 800;
+}
+
+.chat-add-people button {
+  width: fit-content;
+  background: #2d6cdf;
+  color: #fff;
+}
+
+.chat-add-people button:disabled {
+  background: #a7b4c5;
+}
+
+.chat-messages {
+  min-height: 0;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 14px;
+  overflow-y: auto;
+}
+
+.chat-messages p {
+  width: fit-content;
+  max-width: 78%;
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 9px 11px;
+  border-radius: 12px 12px 12px 3px;
+  background: #eef3f9;
+  color: #24324b;
+}
+
+.chat-messages p.mine {
+  justify-self: end;
+  border-radius: 12px 12px 3px 12px;
+  background: #dff7ec;
+}
+
+.chat-typing {
+  width: fit-content;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #f6f9fd;
+  color: #66758e;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.chat-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid #e2e9f3;
+}
+
+.chat-form input {
+  min-width: 0;
+  border: 1px solid #cbd7e7;
+  border-radius: 999px;
+  padding: 10px 12px;
+}
+
+.chat-form button {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: #2f6f5f;
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.chat-form button:disabled {
+  cursor: not-allowed;
+  background: #a7b4c5;
 }
 
 .messages-head {
@@ -799,6 +1114,26 @@ a.active .nav-icon {
 
   .profile-menu {
     right: 18px;
+  }
+
+  .chat-menu,
+  .messages-menu {
+    right: 18px;
+  }
+
+  .chat-menu {
+    width: auto;
+    top: 96px;
+  }
+
+  .chat-box {
+    grid-template-columns: 1fr;
+  }
+
+  .chat-contacts {
+    max-height: 170px;
+    border-right: 0;
+    border-bottom: 1px solid #e2e9f3;
   }
 
   .two-cols {

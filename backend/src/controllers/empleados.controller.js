@@ -3,6 +3,8 @@ import bcrypt from "bcryptjs";
 import Empleado from "../models/employee.model.js";
 import Permiso from "../schemas/permiso.schema.js";
 import Vacacion from "../schemas/vacacion.schema.js";
+import MensajeChat from "../schemas/chat.schema.js";
+import ChatGrupo from "../schemas/chat-grupo.schema.js";
 import { crearNotificacion } from "../services/notificaciones.service.js";
 import { isValidEmail, normalizeEmail, normalizePhotoUrl } from "../utils/validation.js";
 
@@ -245,6 +247,8 @@ class empleadosController {
       const [permisosEliminados, vacacionesEliminadas] = await Promise.all([
         Permiso.deleteMany({ empId: id }),
         Vacacion.deleteMany({ empId: id }),
+        MensajeChat.deleteMany({ $or: [{ emisor: id }, { receptor: id }] }),
+        ChatGrupo.updateMany({ participantes: id }, { $pull: { participantes: id } }),
       ]);
       await Permiso.updateMany(
         { empTramitador: id },

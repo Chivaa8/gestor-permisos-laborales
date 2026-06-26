@@ -9,6 +9,7 @@ Aplicación web para gestionar permisos laborales de empleados. El proyecto esta
 - Documentacion API: Swagger/OpenAPI.
 - Base de datos: MongoDB.
 - Despliegue local: Docker Compose con tres servicios: frontend, backend y MongoDB.
+- Chat en tiempo real: Server-Sent Events nativo, sin dependencias externas.
 
 ## Funcionalidades principales
 
@@ -43,6 +44,15 @@ La aplicación gestiona permisos laborales, vacaciones y ausencias mediante pane
 - Gestión de vacaciones: consulta, filtros, aprobación, rechazo, eliminación y saldo anual por tipo.
 - Calendario general de vacaciones y permisos de toda la plantilla.
 - Agrupación de días con más de dos empleados ausentes y detalle al pulsar.
+- Chat interno entre empleados:
+  - Conversaciones uno a uno.
+  - Mensajes a uno mismo.
+  - Grupos con varias personas.
+  - Añadir participantes a un grupo.
+  - Salir de grupos.
+  - Indicador de enviado `✓` y visto `✓✓`.
+  - Indicador de "está escribiendo".
+  - Burbuja minimizada abajo a la derecha.
 - Gestión de perfil propio:
   - Editar datos existentes.
   - Anadir informacion pendiente.
@@ -72,6 +82,7 @@ La aplicación gestiona permisos laborales, vacaciones y ausencias mediante pane
 - Calendario grande de disponibilidad: verde disponible, amarillo difícil y rojo no laborable.
 - Los sábados, domingos y festivos oficiales de España, Cataluña y Barcelona no descuentan días.
 - Calendario laboral 2026 con los festivos locales de Barcelona del 25 de mayo y 24 de septiembre.
+- Chat lateral derecho minimizable, con lista de personas y grupos, mensajes en tiempo real, lectura y estados visuales.
 
 ## Estructura del proyecto
 
@@ -256,6 +267,7 @@ Incluye documentacion para:
 - Tipos de permiso.
 - Vacaciones.
 - Notificaciones.
+- Chat.
 
 ## Endpoints principales
 
@@ -314,6 +326,26 @@ Incluye documentacion para:
 | GET | `/api/vacaciones/dashboard/resumen` | Resumen anual de la plantilla |
 
 Los tipos de permiso se crean automáticamente al arrancar el backend si no existen.
+
+### Chat
+
+| Metodo | Ruta | Descripcion |
+| --- | --- | --- |
+| GET | `/api/chat/contactos` | Listar personas disponibles para chatear |
+| GET | `/api/chat/eventos` | Canal SSE de eventos en tiempo real |
+| GET | `/api/chat/:id` | Ver conversacion uno a uno |
+| POST | `/api/chat/:id` | Enviar mensaje uno a uno |
+| PUT | `/api/chat/:id/leidas` | Marcar como leidos los mensajes de una persona |
+| POST | `/api/chat/:id/escribiendo` | Avisar de que el usuario esta escribiendo |
+| GET | `/api/chat/grupos` | Listar grupos del usuario |
+| POST | `/api/chat/grupos` | Crear grupo |
+| GET | `/api/chat/grupos/:id` | Ver mensajes de un grupo |
+| POST | `/api/chat/grupos/:id` | Enviar mensaje a un grupo |
+| PUT | `/api/chat/grupos/:id/leidas` | Marcar mensajes de grupo como leidos |
+| PUT | `/api/chat/grupos/:id/participantes` | Añadir personas a un grupo |
+| DELETE | `/api/chat/grupos/:id/salir` | Salir de un grupo |
+
+El chat usa SSE para recibir mensajes, grupos, eventos de lectura e indicador de escritura sin instalar Socket.IO ni otras dependencias.
 
 ## Pruebas
 
@@ -380,7 +412,8 @@ npm run build
 5. Desde Vacaciones se seleccionan las fechas en el calendario grande.
 6. El sistema descuenta únicamente días laborables de Barcelona.
 7. Cada usuario ve sus ausencias en Calendario; el admin ve las de toda la plantilla.
-8. Un usuario admin puede contratar/despedir empleados, aprobar/rechazar solicitudes y ver el dashboard.
+8. Desde el icono de chat se pueden abrir conversaciones, crear grupos, añadir personas, salir de grupos y minimizar la ventana.
+9. Un usuario admin puede contratar/despedir empleados, aprobar/rechazar solicitudes y ver el dashboard.
 
 ## Seguridad
 
@@ -389,6 +422,7 @@ npm run build
 - Los usuarios `basic` solo pueden acceder a sus propios datos y permisos.
 - Las acciones de administración estan protegidas por rol `admin`.
 - Los tokens de recuperación de contraseña caducan a los 5 minutos.
+- El chat requiere JWT y solo permite acceder a grupos donde el usuario participa.
 - El archivo `.env` no debe subirse al repositorio.
 
 ---

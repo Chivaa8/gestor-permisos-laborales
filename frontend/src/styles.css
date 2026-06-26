@@ -61,6 +61,9 @@ button {
 :root.dark-theme .theme-toggle,
 :root.dark-theme .messages-trigger,
 :root.dark-theme .chat-trigger,
+:root.dark-theme .chat-minimized,
+:root.dark-theme .messages-menu,
+:root.dark-theme .chat-menu,
 :root.dark-theme .profile-menu,
 :root.dark-theme .login-card,
 :root.dark-theme .panel,
@@ -73,6 +76,61 @@ button {
   background: #202729;
   color: #edf3f0;
   box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22);
+}
+
+:root.dark-theme .chat-box,
+:root.dark-theme .chat-title,
+:root.dark-theme .chat-form {
+  border-color: #354044;
+}
+
+:root.dark-theme .chat-contacts {
+  border-color: #354044;
+  background: #1b2123;
+}
+
+:root.dark-theme .chat-thread,
+:root.dark-theme .message-item {
+  background: #202729;
+}
+
+:root.dark-theme .chat-contacts button {
+  color: #edf3f0;
+}
+
+:root.dark-theme .chat-contacts button.active,
+:root.dark-theme .chat-contacts button:hover,
+:root.dark-theme .chat-messages p.mine,
+:root.dark-theme .chat-window-actions button:hover {
+  background: #173b2d;
+}
+
+:root.dark-theme .chat-window-actions button {
+  background: #303a3d;
+  color: #edf3f0;
+}
+
+:root.dark-theme .chat-add-people {
+  border-color: #354044;
+  background: #1b2123;
+}
+
+:root.dark-theme .chat-add-people label {
+  color: #edf3f0;
+}
+
+:root.dark-theme .group-actions button,
+:root.dark-theme .chat-add-people button {
+  background: #303a3d;
+  color: #edf3f0;
+}
+
+:root.dark-theme .chat-messages p,
+:root.dark-theme .chat-typing,
+:root.dark-theme .message-empty {
+  border-color: #354044;
+  background: #303a3d;
+  color: #edf3f0;
 }
 
 :root.dark-theme app-vacaciones .balance-card,

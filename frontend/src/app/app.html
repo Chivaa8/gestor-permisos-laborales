@@ -79,8 +79,9 @@
         <b *ngIf="unreadNotifications() > 0">{{ unreadNotifications() }}</b>
       </button>
 
-      <button class="chat-trigger" type="button" [attr.aria-label]="t('chatSoon')" [title]="t('chatSoon')">
+      <button class="chat-trigger" type="button" (click)="toggleChat()" [attr.aria-label]="t('chat')">
         <span class="chat-icon" aria-hidden="true"></span>
+        <b *ngIf="unreadChatCount() > 0">{{ unreadChatCount() }}</b>
       </button>
 
       <section class="messages-menu" *ngIf="messagesOpen">
@@ -193,6 +194,95 @@
         <p class="profile-error" *ngIf="profileError">{{ profileError }}</p>
       </section>
     </header>
+
+    <section class="chat-menu" *ngIf="chatOpen">
+      <div class="messages-head">
+        <strong>{{ t("chat") }}</strong>
+        <div class="chat-window-actions">
+          <span>{{ chatContacts.length + chatGroups.length }}</span>
+          <button type="button" (click)="minimizeChat()" [attr.aria-label]="t('minimizeChat')">—</button>
+          <button type="button" (click)="closeChat()" [attr.aria-label]="t('close')">×</button>
+        </div>
+      </div>
+
+      <div class="chat-box">
+        <aside class="chat-contacts">
+          <button class="new-group-button" type="button" (click)="creatingGroup = !creatingGroup">
+            {{ creatingGroup ? t("cancel") : t("newGroup") }}
+          </button>
+
+          <form class="chat-group-form" *ngIf="creatingGroup" (ngSubmit)="createGroup()">
+            <input name="groupName" [(ngModel)]="groupName" [placeholder]="t('groupName')" maxlength="80">
+            <label *ngFor="let contact of chatContacts">
+              <input type="checkbox" [checked]="groupParticipantIds.has(contact._id)" (change)="toggleGroupParticipant(contact._id)">
+              <span>{{ chatName(contact) }}</span>
+            </label>
+            <button type="submit" [disabled]="!groupName.trim() || groupParticipantIds.size === 0">{{ t("createGroup") }}</button>
+          </form>
+
+          <small class="chat-section-title" *ngIf="chatGroups.length > 0">{{ t("groups") }}</small>
+          <button
+            type="button"
+            *ngFor="let group of chatGroups"
+            [class.active]="selectedGroup?._id === group._id"
+            (click)="selectGroup(group)"
+          >
+            <span>{{ group.nombre }}</span>
+            <small>{{ group.participantes.length }} {{ t("members") }}</small>
+          </button>
+
+          <small class="chat-section-title">{{ t("people") }}</small>
+          <button
+            type="button"
+            *ngFor="let contact of chatContacts"
+            [class.active]="selectedChat?._id === contact._id"
+            (click)="selectChat(contact)"
+          >
+            <span>{{ chatName(contact) }}</span>
+            <small>@{{ contact.username }}</small>
+          </button>
+          <div class="message-empty" *ngIf="chatContacts.length === 0">{{ t("noChatContacts") }}</div>
+        </aside>
+
+        <section class="chat-thread">
+          <div class="chat-title" *ngIf="selectedChat || selectedGroup">
+            <span>{{ currentChatTitle() }}</span>
+            <div class="group-actions" *ngIf="selectedGroup">
+              <button type="button" (click)="addingPeople = !addingPeople">{{ addingPeople ? t("cancel") : t("addPeople") }}</button>
+              <button class="danger-link" type="button" (click)="leaveGroup()">{{ t("leaveGroup") }}</button>
+            </div>
+          </div>
+          <form class="chat-add-people" *ngIf="selectedGroup && addingPeople" (ngSubmit)="addPeopleToGroup()">
+            <label *ngFor="let contact of availableGroupContacts()">
+              <input type="checkbox" [checked]="addParticipantIds.has(contact._id)" (change)="toggleAddParticipant(contact._id)">
+              <span>{{ chatName(contact) }}</span>
+            </label>
+            <div class="message-empty" *ngIf="availableGroupContacts().length === 0">{{ t("noPeopleToAdd") }}</div>
+            <button type="submit" [disabled]="addParticipantIds.size === 0">{{ t("addPeople") }}</button>
+          </form>
+          <div class="message-empty" *ngIf="!selectedChat && !selectedGroup">{{ t("selectChatContact") }}</div>
+          <div class="chat-messages" *ngIf="selectedChat || selectedGroup">
+            <p *ngFor="let message of chatMessages" [class.mine]="message.emisor === auth.currentUser()?.id">
+              {{ message.mensaje }}
+              <small>{{ message.createdAt | date: "dd/MM HH:mm" }} <span class="chat-ticks">{{ messageStatus(message) }}</span></small>
+            </p>
+            <div class="chat-typing" *ngIf="isTyping(selectedChat)">{{ t("typing") }}</div>
+            <div class="message-empty" *ngIf="chatMessages.length === 0">{{ t("noChatMessages") }}</div>
+          </div>
+          <form class="chat-form" *ngIf="selectedChat || selectedGroup" (ngSubmit)="sendChat()">
+            <input name="chatText" [(ngModel)]="chatText" (input)="notifyTyping()" [placeholder]="t('writeMessage')" autocomplete="off" maxlength="1000">
+            <button type="submit" [disabled]="!chatText.trim()">{{ t("send") }}</button>
+          </form>
+          <p class="profile-error" *ngIf="chatError">{{ chatError }}</p>
+        </section>
+      </div>
+    </section>
+
+    <button class="chat-minimized" type="button" *ngIf="chatMinimized" (click)="toggleChat()">
+      <span class="chat-icon" aria-hidden="true"></span>
+      <strong>{{ t("chat") }}</strong>
+      <b *ngIf="unreadChatCount() > 0">{{ unreadChatCount() }}</b>
+    </button>
 
     <main class="content">
       <router-outlet></router-outlet>

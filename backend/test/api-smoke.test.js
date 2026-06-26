@@ -6,6 +6,8 @@ import permisosRoutes from "../src/routes/permisos.routes.js";
 import empleadosRoutes from "../src/routes/empleados.routes.js";
 import vacacionesRoutes from "../src/routes/vacaciones.routes.js";
 import notificacionesRoutes from "../src/routes/notificaciones.routes.js";
+import chatRoutes from "../src/routes/chat.routes.js";
+import MensajeChat from "../src/schemas/chat.schema.js";
 import { app } from "../src/server.js";
 
 test("rutas principales se importan sin romper Express", () => {
@@ -13,6 +15,7 @@ test("rutas principales se importan sin romper Express", () => {
   assert.ok(empleadosRoutes);
   assert.ok(vacacionesRoutes);
   assert.ok(notificacionesRoutes);
+  assert.ok(chatRoutes);
   assert.ok(app);
 });
 
@@ -64,4 +67,21 @@ test("authMiddleware exige cabecera Authorization Bearer", () => {
 
   assert.equal(res.statusCode, 401);
   assert.deepEqual(res.body, { error: "Token no proporcionado" });
+});
+
+test("MensajeChat exige mensaje con texto", () => {
+  const mensaje = new MensajeChat({ emisor: "000000000000000000000001", receptor: "000000000000000000000002", mensaje: "" });
+
+  assert.ok(mensaje.validateSync()?.errors.mensaje);
+});
+
+test("MensajeChat permite marcar lectores", () => {
+  const mensaje = new MensajeChat({
+    emisor: "000000000000000000000001",
+    receptor: "000000000000000000000002",
+    mensaje: "hola",
+    leidoPor: ["000000000000000000000002"],
+  });
+
+  assert.equal(mensaje.validateSync(), undefined);
 });
